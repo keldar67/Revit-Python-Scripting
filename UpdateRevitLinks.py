@@ -22,6 +22,7 @@ def GetLinkName(aLink):
   return Element.Name.GetValue(aLink)
 #------------------------------------------------------------------------#
 def GetLinkFolderPath(aLink):
+  thePath = ''
   #Get the External Reference
   er = aLink.GetExternalFileReference()
   #Make sure it isn't Null
@@ -35,14 +36,6 @@ def GetLinkFolderPath(aLink):
     thePath = os.path.dirname(os.path.abspath(ModelPathUtils.ConvertModelPathToUserVisiblePath(mp)))
     
   return thePath
-#------------------------------------------------------------------------#    
-def GetCurrentRevisionLoaded(aLink):
-  filename = GetLinkName(aLink)
-  return GetRevNumberFromFileName(filename)
-#------------------------------------------------------------------------#
-def GetRevNumberFromFilePath(filepath):
-  filename = os.path.basename(filepath)
-  return GetRevNumberFromFileName(filename)
 #------------------------------------------------------------------------#
 def GetRevNumberFromFileName(filename):
   linkinfo = filename.split('-')
@@ -54,7 +47,7 @@ def GetRevNumberFromFileName(filename):
     revnumber = 0
     
   return revnumber
-#------------------------------------------------------------------------#
+#------------------------------------------------------------------------# 
 def GetLatestRevisionFromFolder(aLink):
   #Get the path that the Link comes from
   folderpath = GetLinkFolderPath(aLink)
@@ -72,7 +65,7 @@ def GetLatestRevisionFromFolder(aLink):
                  if fn.startswith(filestart)]
    
     highest = 0
-    print folderpath
+    #print folderpath
     #If more than one file... loop through and find highest revision
     for afile in filenames:
       num = GetRevNumberFromFileName(afile)
@@ -80,39 +73,48 @@ def GetLatestRevisionFromFolder(aLink):
         highest = num
         theFile = afile
     #Return an updated File Path of a higher Revision    
-    return folderpath + '\\' + theFile    
+    return (folderpath,theFile)    
   else:
     #Return an empty string if not from 'Revit Links Folder'.
     return '' 
     
 #------------------------------------------------------------------------#
-def main():
-  pass
-#------------------------------------------------------------------------#
 theLinks = (
   FilteredElementCollector(doc)
   .OfCategory(BuiltInCategory.OST_RvtLinks)
+  #Only Link Types, NOT Link Instances
   .Where(lambda link: RevitLinkType == type(link))
   )
+  
+RevitLinks = []
+LatestRevisions = []
 
 for aLink in theLinks:
-  #Get the Revision Number of the current Link File
-  revnumber = GetCurrentRevisionLoaded(aLink)
-    
-  #Look to see if there is a newer revision (Higher Number of the same file)
-  newfile = GetLatestRevisionFromFolder(aLink)
-  # Only proceed if we got a file path back
-  if newfile:
-    newrev = GetRevNumberFromFilePath(newfile)
-    if newrev > revnumber:
-      #Update the Link Here
-      theName = Element.Name.GetValue(aLink)
-      print str(newrev) + '\t' + newfile
-      print 'Updating ' + theName + ' from Rev ' + str(revnumber) + ' to ' + str(newrev)
-      theModelPath = ModelPathUtils.ConvertUserVisiblePathToModelPath(newfile)
-      res = aLink.LoadFrom(theModelPath,WorksetConfiguration)
-      print res.LoadResults
+  theFolder = GetLinkFolderPath(aLink)
+  # Filter down the selection of links to only those in the
+  # Revit Links folder... We aren't interested in any others.
+  if 'Revit Links' in theFolder:
+    current = (theFolder, Element.Name.GetValue(aLink))
+    latest = GetLatestRevisionFromFolder(aLink)
+    RevitLinks.Add(current)
+    LatestRevisions.Add(latest)
+    if GetRevNumberFromFileName(latest[1]) > GetRevNumberFromFileName(current[1]):
+      print 'Need to swap ' + GetLinkName(aLink) + ' Rev ' + str(GetRevNumberFromFileName(current[1])) + ' for ' + str(GetRevNumberFromFileName(latest[1]))
+      print 50*'-'
+      newpath = '\\'.join(latest)
+      print 'newpath: ' + newpath
+      #Creat a Revit Readable File Reference from the file path.
+      modelpath = ModelPathUtils.ConvertUserVisiblePathToModelPath(newpath)
+      try:
+        reloadResults = aLink.LoadFrom(modelpath, WorksetConfiguration())
+      except Exception as e:
+        print e.message
       
-    else: #newfile == revnumber:
-      print 'Already Up To Date\t\t[' + str(newrev) + '][' + str(revnumber) + ']'
-  
+      print reloadResults.LoadResult
+    
+for rl, lr in zip(RevitLinks, LatestRevisions):
+  print rl[0]
+  print rl[1]
+  print lr[0]
+  print lr[1]
+  print 50*'-'
