@@ -1,3 +1,5 @@
+import os
+
 basepath = r'X:\BIM\5.0 Project Resources\Ian\TEST'
 
 themodels = [
@@ -23,21 +25,35 @@ def GetLocalFilePath(filename):
     fname = filename[:-4]
   else:
     fname = filename
+  #Rebuild the local file path
+  localpath = "C:\\REVIT_LOCAL" + app.VersionNumber + "\\" + fname + "_" + app.Username + "_Reload.rvt."
+  #Convert it to a modelpath and return it
+  modelpath = ModelPathUtils.ConvertUserVisiblePathToModelPath(localpath);
   
-  localpath = "C:\\REVIT_LOCAL" + app.VersionNumber + "\\" + fname + "_" + app.Username + ".rvt."
-  
-  return localpath
+  return modelpath
 #--------------------------------------------------------------------------------#
-def DoIt():
+def DoIt(apath):
   #Handle to the Application
   app = uiapp.Application
   
   #Arguments required for the file open operation.
-  modelPath = ModelPathUtils.ConvertUserVisiblePathToModelPath(apath)
+  #centralfile = ModelPathUtils.ConvertUserVisiblePathToModelPath(apath)
   opts = OpenOptions()
-  opts.DetachFromCentralOption = DetachFromCentralOption.DoNotDetach
-  #Open the Document.
-  currentdoc = uiapp.Application.OpenAndActivateDocument(modelPath,opts,False)
+  #opts.DetachFromCentralOption = DetachFromCentralOption.DoNotDetach
+  
+  #Create a New Local and open it.
+  centralfile = ModelPathUtils.ConvertUserVisiblePathToModelPath(apath)
+  #Grab Just the filename
+  fname = os.path.split(apath)[1]
+  #Create the local file modellpath 
+  localfile = GetLocalFilePath(fname)
+  
+  WorksharingUtils.CreateNewLocal(centralfile,localfile)
+  #--------------------+
+  # Open the Document. |
+  #--------------------+
+  currentdoc = uiapp.Application.OpenDocumentFile(localfile,opts)
+  
   
   #Setup the Transaction Options for the Synchronize
   transOpts = TransactWithCentralOptions()
@@ -61,6 +77,12 @@ def DoIt():
   #Then Close the Document
   currentdoc.Close(True)
   print 'Closed document: ' + apath
+  
+  #Lastly remove the Local FIle
+  localpath = ModelPathUtils.ConvertModelPathToUserVisiblePath(localfile)
+  print 'Deleting Local File: ' + localpath
+  if os.path.exists(localpath):
+    os.remove(localpath)
 #--------------------------------------------------------------------------------#
 for amodel in themodels:
   thepath = '\\'.join([basepath, amodel])
@@ -68,4 +90,5 @@ for amodel in themodels:
   
 for apath in thepaths:
   print 'Opening document: ' + apath
-  DoIt()
+  DoIt(apath)
+  
