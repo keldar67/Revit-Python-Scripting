@@ -73,6 +73,8 @@ otherProjLinks = {
 'SE-ST-MOD - Levels L15 - L20.rvt': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\VANDEMEER',
 }
 
+
+
 #'': r'',
 
 # Is this link a BVN Project Link
@@ -88,9 +90,99 @@ otherProjLinks = {
 
 # If not then look in the last dict using full filename as key
 # No revision
+#------------------------------------------------------------------------#
+def GetLinkName(aLink):
+  #return [x.strip() for x in Element.Name.GetValue(aLink).split(':')]
+  return Element.Name.GetValue(aLink)
+#------------------------------------------------------------------------#
+def GetAllLinks():
+  theLinks = (
+    FilteredElementCollector(doc)
+    .OfCategory(BuiltInCategory.OST_RvtLinks)
+    #Only Link Types, NOT Link Instances
+    .Where(lambda link: RevitLinkType == type(link))
+    )
+    
+  return theLinks.ToList()
+#------------------------------------------------------------------------#
+def RePathBVNModel(aLink):
+  global BVNProjfiles
 
+  linkName = GetLinkName(aLink)
+  #Grab the first 16 (0-15) characters of the filename
+  keyvale = linkName[:-15]
+  #Get the New Path from the Dictionary above
+  newPath = BVNProjfiles[keyval]
+  if newPath:
+    return rePathLinks(aLink, newPath)
+  else:
+    return False
+  
+#------------------------------------------------------------------------#
+def RePathConsSubModel(aLink):
+  global ACONEXProjFiles
+  
+  linkName = GetLinkName(aLink)
+  #Grab the first 16 (0-15) characters of the filename
+  keyvale = linkName[:-15]
+  #Get the New Path from the Dictionary above
+  newPath = ACONEXProjFiles[keyval]
+  #Find the latest Revision in the new folder <-------------<<< To Do
+  #
+  #
+  #
+  if newPath:
+    return rePathLinks(aLink, newPath)
+  else:
+    return False
+
+#------------------------------------------------------------------------#
+def RePathGeneralModel(aLink):
+  global otherProjLinks
+  
+  linkName = GetLinkName(aLink)
+  #In this case use the whole filename as the dict Key 
+  newPath = otherProjLinks[linkName]
+  if newPath:
+    return rePathLinks(aLink, newPath)
+  else:
+    return False
+
+#------------------------------------------------------------------------# 
+def RePathLinks(aLink, newPath):
+  newLink = ModelPathUtils.ConvertUserVisiblePathToModelPath(newPath)
+  try:
+    reloadResults = aLink.LoadFrom(modelpath, WorksetConfiguration())
+    return True
+  except Exception as e:
+    print 'Error Repathing ' + GetLinkName(aLink)
+    print newPath
+    print e.message
+    print '-' * 75
+    return False
+#------------------------------------------------------------------------#
+  
 def main():
-  pass
-
-
+  
+  #Get a List of the LinkType Elements in the model
+  theLinks = GetAllLinks()
+  
+  for aLink in theLinks:
+    linkName = GetLinkName(aLink)
+    # If We Have a BVN Project File with No Revision Number
+    if '-RVT - ' in linkName:
+      print linkName + ' is a BVN Local Model'
+      RePathBVNModel(aLink)
+    else:
+      # If We have a consultant or Subcontractor model with a revision Number
+      if '-RVT-' in linkName:
+        print linkName + ' is a Consultant or Subcontractor Model'
+        RePathConsSubModel(aLink)
+      else:
+        #We must have a non revision Controlled General Link File
+        print linkName + ' is a General Link with No Revision'
+        RePathGeneralModel(aLink)
+     
+  
+#------------------------------------------------------------------------# 
 if __name__ == '__main__': main()
