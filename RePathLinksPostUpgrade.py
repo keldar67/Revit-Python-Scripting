@@ -150,7 +150,7 @@ def RePathGeneralModel(aLink):
 
 #------------------------------------------------------------------------# 
 def RePathLinks(aLink, newPath):
-  newLink = ModelPathUtils.ConvertUserVisiblePathToModelPath(newPath)
+  modelpath = ModelPathUtils.ConvertUserVisiblePathToModelPath(newPath)
   try:
     reloadResults = aLink.LoadFrom(modelpath, WorksetConfiguration())
     return True
@@ -171,18 +171,32 @@ def main():
     linkName = GetLinkName(aLink)
     # If We Have a BVN Project File with No Revision Number
     if '-RVT - ' in linkName:
-      print linkName + ' is a BVN Local Model'
-      RePathBVNModel(aLink)
+      #print linkName + ' is a BVN Local Model'
+      if RePathBVNModel(aLink):
+        print linkName + ' UPDATED'
+      else:
+        print 'Error updating: ' + linkName
+        
     else:
       # If We have a consultant or Subcontractor model with a revision Number
       if '-RVT-' in linkName:
-        print linkName + ' is a Consultant or Subcontractor Model'
-        RePathConsSubModel(aLink)
+        #print linkName + ' is a Consultant or Subcontractor Model'
+        if RePathConsSubModel(aLink):
+          print linkName + ' UPDATED'
+        else:  
+          print 'Error updating: ' + linkName
       else:
         #We must have a non revision Controlled General Link File
-        print linkName + ' is a General Link with No Revision'
-        RePathGeneralModel(aLink)
-     
+        #print linkName + ' is a General Link with No Revision'
+        if RePathGeneralModel(aLink):
+          print linkName + ' UPDATED'
+        else:  
+          print 'Error updating: ' + linkName
+          
+  print '+------------------------------------+'
+  print '|  >>--->  C O M P L E T E  <---<<   |'  
+  print '+------------------------------------+'
   
 #------------------------------------------------------------------------# 
 if __name__ == '__main__': main()
+
