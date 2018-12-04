@@ -51,10 +51,10 @@ ACONEXProjFiles = {
 #MPX
 'MPX-PM-MOD-XX-001': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\MPX',
 #PFPS
-'PFS-FS-MOD-XX-001': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\PFPS',
-'PFS-FS-MOD-XX-002': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\PFPS',
-'PFS-FD-MOD-XX-003': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\PFPS',
-'PFS-FS-MOD-XX-004': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\PFPS',
+'PFS-FS-MOD-XX-001': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\PFPS\001 - PFS-FS-MOD-XX-001',
+'PFS-FS-MOD-XX-002': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\PFPS\002 - PFS-FS-MOD-XX-002',
+'PFS-FD-MOD-XX-003': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\PFPS\003 - PFS-FD-MOD-XX-003',
+'PFS-FS-MOD-XX-004': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\PFPS\004 - PFS-FS-MOD-XX-004',
 #STAR
 'STA-EL-MOD-XX-001': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\STAR',
 #WEBB
@@ -70,7 +70,7 @@ otherProjLinks = {
 'SE-ST-MOD - Levels B05 - L02.rvt': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\VANDEMEER\001 - Levels B5 - 02',
 'SE-ST-MOD - Levels L02 - L06.rvt': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\VANDEMEER\002 - Levels 02 - 06',
 'SE-ST-MOD - Levels L07 - L14.rvt': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\VANDEMEER\003 - Levels 07 - 14',
-'SE-ST-MOD - Levels L15 - L20.rvt': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\VANDEMEER\004 - Levels 15 - 20',
+'SE-ST-MOD - Levels L15 - L20.rvt': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\VANDEMEER\004 - Levels 15 - 20'
 }
 
 
