@@ -67,10 +67,10 @@ otherProjLinks = {
 'SU-MOD-XX-XX-001 - AAM Survey.rvt': r'X:\003 - Multiplex\Design\BIM\_Revit\4.0 CAD Links\1.0 MPX\AAM',
 'AvroKO - CAD Links.rvt': r'X:\003 - Multiplex\Design\BIM\_Revit\4.0 CAD Links\2.0 AMPC\AvroKO',
 'WEBB Substations CAD.rvt': r'X:\003 - Multiplex\Design\BIM\_Revit\4.0 CAD Links\1.0 MPX\WEBB',
-'SE-ST-MOD - Levels B05 - L02.rvt': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\VANDEMEER',
-'SE-ST-MOD - Levels L02 - L06.rvt': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\VANDEMEER',
-'SE-ST-MOD - Levels L07 - L14.rvt': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\VANDEMEER',
-'SE-ST-MOD - Levels L15 - L20.rvt': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\VANDEMEER',
+'SE-ST-MOD - Levels B05 - L02.rvt': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\VANDEMEER\001 - Levels B5 - 02',
+'SE-ST-MOD - Levels L02 - L06.rvt': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\VANDEMEER\002 - Levels 02 - 06',
+'SE-ST-MOD - Levels L07 - L14.rvt': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\VANDEMEER\003 - Levels 07 - 14',
+'SE-ST-MOD - Levels L15 - L20.rvt': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\VANDEMEER\004 - Levels 15 - 20',
 }
 
 
