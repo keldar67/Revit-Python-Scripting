@@ -112,9 +112,4 @@ for aLink in theLinks:
       
       print reloadResults.LoadResult
     
-for rl, lr in zip(RevitLinks, LatestRevisions):
-  print rl[0]
-  print rl[1]
-  print lr[0]
-  print lr[1]
-  print 50*'-'
+
