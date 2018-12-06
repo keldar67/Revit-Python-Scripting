@@ -59,7 +59,10 @@ ACONEXProjFiles = {
 #STAR
 'STA-EL-MOD-XX-001': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\STAR\STA-EL-MOD-XX-001-RVT-26 - ELECTRICAL SERVICES.rvt',
 #WEBB
-'ASP3-MOD-XX-XX-001': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\WEBB\ASP3-MOD-XX-XX-001-RVT-27 - WEBB Substation Model.rvt'
+'ASP3-MOD-XX-XX-001': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\WEBB\ASP3-MOD-XX-XX-001-RVT-27 - WEBB Substation Model.rvt',
+#DRS
+'ID-MOD-XX-XX-001': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\2.0 AMPC\DRS\ID-MOD-XX-XX-001-RVT-05-SD_Lobby and Terrace.rvt',
+'ID-MOD-XX-XX-002': r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\2.0 AMPC\DRS\ID-MOD-XX-XX-002-RVT-01-SD_The Club lvl 02-03 (2017-03-21).rvt'
 }
 
 otherProjLinks = {
@@ -148,8 +151,9 @@ def RePathConsSubModel(aLink):
   global ACONEXProjFiles
   
   linkName = GetLinkName(aLink)
-  #Grab the first 16 (0-15) characters of the filename
-  keyval = linkName[:16]
+  #Grab the first 16/17 characters of the filename up to but not
+  #including the "-RVT"
+  keyval = linkName[:linkName.find('-RVT')]
   
   try:
     #Get the New Path from the Dictionary above
