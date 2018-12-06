@@ -149,19 +149,18 @@ def RePathConsSubModel(aLink):
   
   linkName = GetLinkName(aLink)
   #Grab the first 16 (0-15) characters of the filename
-  fileID = linkName[:16]
+  keyval = linkName[:16]
   
   try:
     #Get the New Path from the Dictionary above
-    newPath = ACONEXProjFiles[fileID]
+    newPath = ACONEXProjFiles[keyval]
     #Find the latest Revision in the new folder <-------------<<< To Do
     #
-    print 'FileID:  ' + fileID
-    print 'newPath: ' + newPath
-    latest = GetLatestRevisionFromFolder(fileID, newPath)
-    print '+-------+' + latest
+    #print 'newPath: ' + newPath
+    #latest = GetLatestRevisionFromFolder(fileID, newPath)
+    #print '+-------+' + latest
     #Rebuild the path
-    newlink = '\\'.join(latest)
+    #newlink = '\\'.join(latest)
     
     if newPath:
       return RePathLinks(aLink, newPath)
@@ -243,9 +242,9 @@ def main():
         else:  
           print 'Error updating: ' + linkName
           
-  print '+------------------------------------+'
-  print '|  >>--->  C O M P L E T E  <---<<   |'  
-  print '+------------------------------------+'
+  print '         +------------------------------------+'
+  print '         |  >>--->  C O M P L E T E  <---<<   |'  
+  print '         +------------------------------------+'
   
 #------------------------------------------------------------------------# 
 if __name__ == '__main__': main()
