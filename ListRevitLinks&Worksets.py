@@ -5,7 +5,7 @@ def GetAllLinks():
     FilteredElementCollector(doc)
     .OfCategory(BuiltInCategory.OST_RvtLinks)
     #Only Link Types, NOT a Nested Link
-    .Where(lambda link: (RevitLinkType == type(link)) and not(link.IsNestedLink))
+    .Where(lambda link: (RevitLinkInstance == type(link)))
     .OrderBy(lambda link: Element.Name.GetValue(link))
     )
     
