@@ -35,8 +35,15 @@ def GetLinkedWorksetStatus():
   laws = lwst.GetWorkset(lwst.GetActiveWorksetId())
   #Test to see if that Workset is open
   laws.IsOpen
-  
+ 
   #Read this - https://forums.autodesk.com/t5/revit-api-forum/manage-worksets-of-a-link/td-p/6412881
+  
+  theWorksets = FilteredWorksetCollector(ldoc)
+  
+  for a Workset in theWorksets:
+    if aWorkset.Kind == WorksetKind.UserWorkset:
+      print aWorkset.Name
+
 #------------------------------------------------------------------------#
 theLinks = GetAllLinks()
 aLink = theLinks[0]
