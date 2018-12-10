@@ -41,7 +41,14 @@ def worksetinfo(aLink):
     else:
       closedWorksets.Add(aWorkset)
       print '  [-] - ' + aWorkset.Name
-      
+#------------------------------------------------------------------------#
+def GetLinkedDocuments():
+  theDocuments = {}
+  
+  for aDoc in doc.Application.Documents:
+    theDocuments.update({aDoc.Title: aDoc})
+  
+  return theDocuments
 #------------------------------------------------------------------------#
 def GetLinkedWorksetStatus():
   #Get the Links - Document
@@ -68,6 +75,11 @@ theLinks = GetAllLinks()
 #wsp = WorksharingUtils.GetUserWorksetInfo(mp)
 #for w in wsp: print w.Name
 
+theDocuments = GetLinkedDocuments()
+
 for aLink in theLinks:
-  print GetLinkName(aLink)
-  worksetinfo(aLink)
+  linkname = GetLinkName(aLink)
+  if linkname in theDocuments.Keys:
+    linkeDoc = theDocuments[linkname]
+  
+  worksetinfo(linkeDoc)
