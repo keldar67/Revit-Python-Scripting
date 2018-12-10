@@ -100,7 +100,7 @@ for aLink in theLinks:
     LatestRevisions.Add(latest)
     if GetRevNumberFromFileName(latest[1]) > GetRevNumberFromFileName(current[1]):
       print 'Updating Link: ' + GetLinkName(aLink) + ' From Rev ' + str(GetRevNumberFromFileName(current[1])) + ' to ' + str(GetRevNumberFromFileName(latest[1]))
-      ##print 50*'-'
+
       newpath = '\\'.join(latest)
       #print 'newpath: ' + newpath
       #Creat a Revit Readable File Reference from the file path.
@@ -111,5 +111,6 @@ for aLink in theLinks:
         print e.message
       
       print reloadResults.LoadResult
+      print 50*'-'
     
 
