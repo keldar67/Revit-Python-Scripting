@@ -99,10 +99,10 @@ for aLink in theLinks:
     RevitLinks.Add(current)
     LatestRevisions.Add(latest)
     if GetRevNumberFromFileName(latest[1]) > GetRevNumberFromFileName(current[1]):
-      print 'Need to swap ' + GetLinkName(aLink) + ' Rev ' + str(GetRevNumberFromFileName(current[1])) + ' for ' + str(GetRevNumberFromFileName(latest[1]))
-      print 50*'-'
+      print 'Updating Link: ' + GetLinkName(aLink) + ' From Rev ' + str(GetRevNumberFromFileName(current[1])) + ' to ' + str(GetRevNumberFromFileName(latest[1]))
+      ##print 50*'-'
       newpath = '\\'.join(latest)
-      print 'newpath: ' + newpath
+      #print 'newpath: ' + newpath
       #Creat a Revit Readable File Reference from the file path.
       modelpath = ModelPathUtils.ConvertUserVisiblePathToModelPath(newpath)
       try:
