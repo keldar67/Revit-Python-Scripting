@@ -26,6 +26,23 @@ def GetLinkModelPath(aLink):
   
   return mp
 #------------------------------------------------------------------------#
+def worksetinfo(aLink):
+  linkdoc = aLink.Document
+  #Get the Worksets
+  theWorksets = (
+    FilteredWorksetCollector(linkdoc)
+    .Where(lambda ws: ws.Kind == WorksetKind.UserWorkset)
+    )
+  
+  closedWorksets = []
+  for aWorkset in theWorksets:
+    if aWorkset.IsOpen:
+      print '  [o] - ' + aWorkset.Name
+    else:
+      closedWorksets.Add(aWorkset)
+      print '  [-] - ' + aWorkset.Name
+      
+#------------------------------------------------------------------------#
 def GetLinkedWorksetStatus():
   #Get the Links - Document
   ldoc = aLink.Document
@@ -40,13 +57,17 @@ def GetLinkedWorksetStatus():
   
   theWorksets = FilteredWorksetCollector(ldoc)
   
-  for a Workset in theWorksets:
+  for aWorkset in theWorksets:
     if aWorkset.Kind == WorksetKind.UserWorkset:
       print aWorkset.Name
 
 #------------------------------------------------------------------------#
 theLinks = GetAllLinks()
-aLink = theLinks[0]
-mp = GetLinkModelPath(aLink)
-wsp = WorksharingUtils.GetUserWorksetInfo(mp)
-for w in wsp: print w.Name
+#aLink = theLinks[0]
+#mp = GetLinkModelPath(aLink)
+#wsp = WorksharingUtils.GetUserWorksetInfo(mp)
+#for w in wsp: print w.Name
+
+for aLink in theLinks:
+  print GetLinkName(aLink)
+  worksetinfo(aLink)
