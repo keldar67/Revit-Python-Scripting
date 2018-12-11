@@ -26,6 +26,38 @@ def GetLinkModelPath(aLink):
   
   return mp
 #------------------------------------------------------------------------#
+def GetOpenWorksetIds(linkdoc):
+  #Get the Worksets
+  theWorksets = (
+    FilteredWorksetCollector(linkdoc)
+    .Where(lambda ws: ws.Kind == WorksetKind.UserWorkset)
+    )
+    
+  OpenWorksets = []
+  
+  for aWorkset in theWorksets:
+    if aWorkset.IsOpen:
+      OpenWorksets.Add(aWorkset.Id)
+      
+  #Return the list of Ids    
+  return OpenWorksets
+#------------------------------------------------------------------------#
+def GetClosedWorksetIds(linkdoc):
+  #Get the Worksets
+  theWorksets = (
+    FilteredWorksetCollector(linkdoc)
+    .Where(lambda ws: ws.Kind == WorksetKind.UserWorkset)
+    )
+    
+  ClosedWorksets = []
+  
+  for aWorkset in theWorksets:
+    if not(aWorkset.IsOpen):
+      ClosedWorksets.Add(aWorkset.Id)
+      
+  #Return the list of Ids    
+  return ClosedWorksets
+#------------------------------------------------------------------------#
 def worksetinfo(linkdoc):
   #linkdoc = aLink.Document
   #Get the Worksets
@@ -88,6 +120,6 @@ for aLink in theLinks:
     NotWorkshared.Add(linkdoc.Title)
     
 if NotWorkshared.Count > 0:
-  print 'The Following Links are not workshared...!!'
+  print '\nThe Following Links are not workshared...!!\n'
   for nws in NotWorkshared:
     print nws
