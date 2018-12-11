@@ -26,8 +26,8 @@ def GetLinkModelPath(aLink):
   
   return mp
 #------------------------------------------------------------------------#
-def worksetinfo(aLink):
-  linkdoc = aLink.Document
+def worksetinfo(linkdoc):
+  #linkdoc = aLink.Document
   #Get the Worksets
   theWorksets = (
     FilteredWorksetCollector(linkdoc)
@@ -35,6 +35,7 @@ def worksetinfo(aLink):
     )
   
   closedWorksets = []
+  print linkdoc.Title
   for aWorkset in theWorksets:
     if aWorkset.IsOpen:
       print '  [o] - ' + aWorkset.Name
@@ -74,12 +75,19 @@ theLinks = GetAllLinks()
 #mp = GetLinkModelPath(aLink)
 #wsp = WorksharingUtils.GetUserWorksetInfo(mp)
 #for w in wsp: print w.Name
-
+NotWorkshared = []
 theDocuments = GetLinkedDocuments()
 
 for aLink in theLinks:
   linkname = GetLinkName(aLink)
   if linkname in theDocuments.Keys:
-    linkeDoc = theDocuments[linkname]
-  
-  worksetinfo(linkeDoc)
+    linkdoc = theDocuments[linkname]
+  if linkdoc.IsWorkshared:
+    worksetinfo(linkdoc)
+  else:
+    NotWorkshared.Add(linkdoc.Title)
+    
+if NotWorkshared.Count > 0:
+  print 'The Following Links are not workshared...!!'
+  for nws in NotWorkshared:
+    print nws
