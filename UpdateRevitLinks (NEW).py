@@ -103,18 +103,25 @@ def GetLinkedDocuments():
 #------------------------------------------------------------------------#
 def GetLinkedDocumentDoc(theDocuments, aLinkName):
   
+  #remove the ".rvt"
+  aLinkName = aLinkName[:aLinkName.find('.rvt')]
+  
   #Check that the document is in the open documents (ie a Link)
-  if aLinkName in theDocuments.Keys:
+  if theDocuments.ContainsKey(aLinkName):
+    print 'File: ' + aLinkName + ' is in the Dictionary'
     linkdoc = theDocuments[aLinkName]
   else:
-    linkdoc = None      
+    linkdoc = None     
   return linkdoc
 #------------------------------------------------------------------------#
 NotWorksharedLinks = []
 
 #Get All of the current open documents
 theDocuments = GetLinkedDocuments()
-  
+print 'theDocument Type = ' + str(type(theDocuments))
+for aDocument in theDocuments:
+  print aDocument
+  print theDocuments[aDocument]
 # Get All of the Links (LinkTypes Only)
 theLinks = GetAllLinks()
 
@@ -150,8 +157,9 @@ for aLink in theLinks:
       linkDoc = GetLinkedDocumentDoc(theDocuments, theLinkName)
       
       #make Sure we got a valid document back.
+      print 'linkdoc Type = ' + str(type(linkDoc))
       if linkDoc:
-        if linkDoc.IsWorkShared():
+        if linkDoc.IsWorkshared:
           print 'Getting the Workset Status of the link:' + linkDoc.Title
           
         else:
