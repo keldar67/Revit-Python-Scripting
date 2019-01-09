@@ -108,7 +108,7 @@ def GetLinkedDocumentDoc(theDocuments, aLinkName):
   
   #Check that the document is in the open documents (ie a Link)
   if theDocuments.ContainsKey(aLinkName):
-    print 'File: ' + aLinkName + ' is in the Dictionary'
+    #---------print 'File: ' + aLinkName + ' is in the Dictionary'
     linkdoc = theDocuments[aLinkName]
   else:
     linkdoc = None     
@@ -130,33 +130,21 @@ def GetClosedWorksetIds(linkdoc):
   #Return the list of Ids    
   return ClosedWorksets
 #------------------------------------------------------------------------#
-def PrintClosedWorksets(linkdoc, wslist):
-  print 'Closed Worksets as follows:'
+def LogListClosedWorksets(linkdoc, wslist):
+  
   wst = linkdoc.GetWorksetTable()
   
+  wlist = ''
   #Print the list of Closed Worksets to the Log
   for w in wslist:
-    print '  [-] ' + wst.GetWorkset(w).Name
-#------------------------------------------------------------------------#
-def worksetinfo(linkdoc):
-  #linkdoc = aLink.Document
-  #Get the Worksets
-  theWorksets = (
-    FilteredWorksetCollector(linkdoc)
-    .Where(lambda ws: ws.Kind == WorksetKind.UserWorkset)
-    )
+    wlist = wlist +  '\n  [-] ' + wst.GetWorkset(w).Name
   
-  closedWorksets = []
-  print linkdoc.Title
-  for aWorkset in theWorksets:
-    if aWorkset.IsOpen:
-      print '  [o] - ' + aWorkset.Name
-    else:
-      closedWorksets.Add(aWorkset)
-      print '  [-] - ' + aWorkset.Name
+  return wlist
+#------------------------------------------------------------------------#
+
 #------------------------------------------------------------------------#
 NotWorksharedLinks = []
-
+LogSeparator = '+------------------------------------------------------------------------+'
 #Get All of the current open documents
 theDocuments = GetLinkedDocuments()
 print 'theDocument Type = ' + str(type(theDocuments))
@@ -171,8 +159,14 @@ for aLink in theLinks:
   theLinkPath = GetLinkFolderPath(aLink)
   theLinkName = GetLinkName(aLink)
   
+  #Create a Log Element for each link
+  linklog = ''
+  linklog = linklog + '\n' + LogSeparator
+  linklog = linklog + '\nLink Name = ' + theLinkName
+  linklog = linklog + '\nLink Path = ' + theLinkPath
+  linklog = linklog + '\n'
+  linklog = linklog + '\n'
   
-    
   if '8.0 Revit Links' in theLinkPath:
     #Check to see if this link is loaded so we can re-instate this status
     isloaded = aLink.IsLoaded(doc,aLink.Id)
@@ -188,39 +182,41 @@ for aLink in theLinks:
     
     if theLinkCurrentRev.Equals(NewRevision):
       #No Relinking is required.
-      print 'File: ' + theLinkName + ' is already up to date at Rev ' + theLinkCurrentRev.ToString()
+      linklog = linklog + '\nFile: ' + theLinkName + ' is already up to date at Rev ' + theLinkCurrentRev.ToString()
     else:
       #We need to relink from the newer revision.
-      print 'Need to update from Rev ' + theLinkCurrentRev.ToString() + ' to Rev ' + NewRevision.ToString()
-      
-      #If the link is Workshared we need to make sure we match any closed Worksets
+      linklog = linklog + '\nNeed to update from Rev ' + theLinkCurrentRev.ToString() + ' to Rev ' + NewRevision.ToString()
       
       linkdoc = GetLinkedDocumentDoc(theDocuments, theLinkName)
       
       #make Sure we got a valid document back.
-      print 'linkdoc Type = ' + str(type(linkdoc))
       if linkdoc:
         if linkdoc.IsWorkshared:
-          print 'Getting the Workset Status of the link:' + linkdoc.Title
+          #If the link is Workshared we need to make sure we match any closed Worksets
+          #--------print 'Getting the Workset Status of the link:' + linkdoc.Title
           #Get the List of Closed Worksets
           closedWS = GetClosedWorksetIds(linkdoc)
           wc = WorksetConfiguration()
           wc.Close(closedWS)
           #worksetinfo(linkdoc)
-          PrintClosedWorksets(linkdoc,closedWS)
+          linklog = linklog + '\nClosed Worksets as follows:'
+          linklog = linklog + LogListClosedWorksets(linkdoc,closedWS)
         else:
           NotWorksharedLinks.Add(GetLinkName(aLink))
       else:
-        print 'linkDoc Not Found'       
+        linklog - linklog + '\nlinkDoc Not Found'       
     
-    print 'PATH - ' + theLinkPath
-    print 'NAME - ' + theLinkName
-    print 'CREV - ' + theLinkCurrentRev.ToString()
-    print '-' * 50
-    print 'NewPATH - ' + newLinkPath
-    print 'newNAME - ' + newLinkName
-    print 'NRev - ' + NewRevision.ToString()
-    print '-' * 75
+    #print 'PATH - ' + theLinkPath
+    #print 'NAME - ' + theLinkName
+    #print 'CREV - ' + theLinkCurrentRev.ToString()
+    #print '-' * 50
+    #print 'NewPATH - ' + newLinkPath
+    #print 'newNAME - ' + newLinkName
+    #print 'NRev - ' + NewRevision.ToString()
+    #print '-' * 75
+    
+    linklog = linklog + '\n' + LogSeparator
+    print linklog
   else:
     pass
     #print '... not a Revit Link'
