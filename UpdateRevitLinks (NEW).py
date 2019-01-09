@@ -114,6 +114,47 @@ def GetLinkedDocumentDoc(theDocuments, aLinkName):
     linkdoc = None     
   return linkdoc
 #------------------------------------------------------------------------#
+def GetClosedWorksetIds(linkdoc):
+  #Get the Worksets
+  theWorksets = (
+    FilteredWorksetCollector(linkdoc)
+    .Where(lambda ws: ws.Kind == WorksetKind.UserWorkset)
+    )
+    
+  ClosedWorksets = []
+  
+  for aWorkset in theWorksets:
+    if not(aWorkset.IsOpen):
+      ClosedWorksets.Add(aWorkset.Id)
+      
+  #Return the list of Ids    
+  return ClosedWorksets
+#------------------------------------------------------------------------#
+def PrintClosedWorksets(linkdoc, wslist):
+  print 'Closed Worksets as follows:'
+  wst = linkdoc.GetWorksetTable()
+  
+  #Print the list of Closed Worksets to the Log
+  for w in wslist:
+    print '  [-] ' + wst.GetWorkset(w).Name
+#------------------------------------------------------------------------#
+def worksetinfo(linkdoc):
+  #linkdoc = aLink.Document
+  #Get the Worksets
+  theWorksets = (
+    FilteredWorksetCollector(linkdoc)
+    .Where(lambda ws: ws.Kind == WorksetKind.UserWorkset)
+    )
+  
+  closedWorksets = []
+  print linkdoc.Title
+  for aWorkset in theWorksets:
+    if aWorkset.IsOpen:
+      print '  [o] - ' + aWorkset.Name
+    else:
+      closedWorksets.Add(aWorkset)
+      print '  [-] - ' + aWorkset.Name
+#------------------------------------------------------------------------#
 NotWorksharedLinks = []
 
 #Get All of the current open documents
@@ -154,14 +195,19 @@ for aLink in theLinks:
       
       #If the link is Workshared we need to make sure we match any closed Worksets
       
-      linkDoc = GetLinkedDocumentDoc(theDocuments, theLinkName)
+      linkdoc = GetLinkedDocumentDoc(theDocuments, theLinkName)
       
       #make Sure we got a valid document back.
-      print 'linkdoc Type = ' + str(type(linkDoc))
-      if linkDoc:
-        if linkDoc.IsWorkshared:
-          print 'Getting the Workset Status of the link:' + linkDoc.Title
-          
+      print 'linkdoc Type = ' + str(type(linkdoc))
+      if linkdoc:
+        if linkdoc.IsWorkshared:
+          print 'Getting the Workset Status of the link:' + linkdoc.Title
+          #Get the List of Closed Worksets
+          closedWS = GetClosedWorksetIds(linkdoc)
+          wc = WorksetConfiguration()
+          wc.Close(closedWS)
+          #worksetinfo(linkdoc)
+          PrintClosedWorksets(linkdoc,closedWS)
         else:
           NotWorksharedLinks.Add(GetLinkName(aLink))
       else:
