@@ -147,27 +147,32 @@ NotWorksharedLinks = []
 LogSeparator = '+------------------------------------------------------------------------+'
 #Get All of the current open documents
 theDocuments = GetLinkedDocuments()
-print 'theDocument Type = ' + str(type(theDocuments))
-for aDocument in theDocuments:
-  print aDocument
-  print theDocuments[aDocument]
+
+#for aDocument in theDocuments:
+#  print aDocument
+#  print theDocuments[aDocument]
+
 # Get All of the Links (LinkTypes Only)
 theLinks = GetAllLinks()
+
+#Create a Log Element for each link
+linklog = ''
+linklog = linklog + '\n' + LogSeparator
 
 #For Each of the Links:
 for aLink in theLinks:
   theLinkPath = GetLinkFolderPath(aLink)
   theLinkName = GetLinkName(aLink)
   
-  #Create a Log Element for each link
-  linklog = ''
-  linklog = linklog + '\n' + LogSeparator
-  linklog = linklog + '\nLink Name = ' + theLinkName
-  linklog = linklog + '\nLink Path = ' + theLinkPath
-  linklog = linklog + '\n'
-  linklog = linklog + '\n'
+  
+  #linklog = linklog + '\n'
+  #linklog = linklog + '\n'
   
   if '8.0 Revit Links' in theLinkPath:
+  
+    linklog = linklog + '\nLink Name = ' + theLinkName
+    linklog = linklog + '\nLink Path = ' + theLinkPath
+    
     #Check to see if this link is loaded so we can re-instate this status
     isloaded = aLink.IsLoaded(doc,aLink.Id)
     
@@ -216,12 +221,16 @@ for aLink in theLinks:
     #print '-' * 75
     
     linklog = linklog + '\n' + LogSeparator
-    print linklog
+    
   else:
     pass
     #print '... not a Revit Link'
-  
-  #If the Link was unloaded prior to being up-revved - reistate.
+
+#Print the Link Log to the Screen
+print linklog  
+
+
+#If the Link was unloaded prior to being up-revved - reistate.
   #if not isloaded:
   #  aLink.Unload('Need to figure out how to use this method)
 if NotWorksharedLinks.Count > 0:
