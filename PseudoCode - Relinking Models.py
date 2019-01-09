@@ -19,7 +19,7 @@
             #Add the model to the NotWorkshared List
             #Create a blank WorksharedConfig Element
         
-        #Call the Relink with the new link and the Workshared Confir Element
+        #Call the Relink with the new link and the Workshared Config Element
         
     #Else if not
     
