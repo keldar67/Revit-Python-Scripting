@@ -206,8 +206,15 @@ for aLink in theLinks:
           #worksetinfo(linkdoc)
           linklog = linklog + '\nClosed Worksets as follows:'
           linklog = linklog + LogListClosedWorksets(linkdoc,closedWS)
+          
+          #Relink From the New Revision with Workset Control
+          
+          
         else:
           NotWorksharedLinks.Add(GetLinkName(aLink))
+          linklog = linklog + '\nThis file is NOT Workshared...!'
+          #Relink From the New Revision (No Workset Control)
+          
       else:
         linklog - linklog + '\nlinkDoc Not Found'       
     
@@ -229,6 +236,7 @@ for aLink in theLinks:
 #Print the Link Log to the Screen
 print linklog  
 
+#Testing
 
 #If the Link was unloaded prior to being up-revved - reistate.
   #if not isloaded:
