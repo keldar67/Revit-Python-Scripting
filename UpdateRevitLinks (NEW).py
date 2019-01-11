@@ -58,6 +58,24 @@ def GetRevNumberFromFileName(filename):
     
   return revnumber
 #------------------------------------------------------------------------# 
+#def isValidFile(fn, filestart):
+#  return (os.path.isfile(fn) and fn.StartsWith(filestart) and fn.EndsWith('.rvt'))
+#------------------------------------------------------------------------#
+def GetCandidateRevisions(contents):
+  for c in contents:
+    print 'Item: ' + c
+    if os.path.isfile(c):
+      print 'file: Yes'
+    else:
+      print 'folder: Yes'
+      
+    if c.EndsWith('.rvt'):
+      print 'Revit File'
+    else:
+      print 'Not Revit File'
+    
+  
+#------------------------------------------------------------------------# 
 def GetLatestRevisionFromFolder(aLink):
   #Get the path that the Link comes from
   folderpath = GetLinkFolderPath(aLink)
@@ -71,11 +89,18 @@ def GetLatestRevisionFromFolder(aLink):
     
     # list of Revit files in the folder that match
     # both the start of the filename and end with .rvt
-    filenames = [fn for fn in os.listdir(folderpath)
-                 if fn.startswith(filestart)]
-   
+    #contents = [fn for fn in os.listdir(folderpath)        #<----<< Rewrite Longhand
+    #             if fn.StartsWith(filestart)]
+    
+    #something like this
+    filenames = fnmatch.filter(os.listdir(path), filestart + '*.rvt')
+    
+    #filenames = GetCandidateRevisions(contents)
+    
+    #for f in filenames: print f
+    
     highest = 0
-    #print folderpath
+    print folderpath
     #If more than one file... loop through and find highest revision
     for afile in filenames:
       num = GetRevNumberFromFileName(afile)
@@ -144,7 +169,9 @@ def LogListClosedWorksets(linkdoc, wslist):
 
 #------------------------------------------------------------------------#
 NotWorksharedLinks = []
-LogSeparator = '+------------------------------------------------------------------------+'
+NotFoundLinkDocs = []
+
+LogSeparator = '+' + '-'*80 + '+'
 #Get All of the current open documents
 theDocuments = GetLinkedDocuments()
 
@@ -175,13 +202,17 @@ for aLink in theLinks:
     
     #Check to see if this link is loaded so we can re-instate this status
     isloaded = aLink.IsLoaded(doc,aLink.Id)
+    #If the Link was unloaded, reload it while we check for updates.
+    #It will be unloaded at the end.
+    if not isloaded:
+      aLink.Reload()
     
     #Get the Current Revision of this link
     theLinkCurrentRev = GetRevNumberFromFileName(theLinkName)
     
     #Get the Highest Revision Available
     newLinkPath, newLinkName = GetLatestRevisionFromFolder(aLink)
-    
+    newFilePath = newLinkPath + '\\' + newLinkName
     #Get the Potential New Revision Number
     NewRevision = GetRevNumberFromFileName(newLinkName)
     
@@ -208,15 +239,28 @@ for aLink in theLinks:
           linklog = linklog + LogListClosedWorksets(linkdoc,closedWS)
           
           #Relink From the New Revision with Workset Control
+          print newFilePath
+          modelpath = ModelPathUtils.ConvertUserVisiblePathToModelPath(newFilePath)
+          aLink.LoadFrom(modelpath, wc)
+          
+          #If File was originally unloaded the reset to Unloaded
+          #if not(isloaded):
+          #  linklog = linklog + '\nResetting the Link to UNLOADED.'
+          #  aLink.Unload(null)
           
           
         else:
           NotWorksharedLinks.Add(GetLinkName(aLink))
           linklog = linklog + '\nThis file is NOT Workshared...!'
           #Relink From the New Revision (No Workset Control)
+          modelpath = ModelPathUtils.ConvertUserVisiblePathToModelPath(newFilePath)
+          aLink.LoadFrom(modelpath, WorksetConfiguration())
+          
+          #If File was originally unloaded the reset to Unloaded
           
       else:
-        linklog - linklog + '\nlinkDoc Not Found'       
+        linklog = linklog + '\nlinkDoc Not Found'  
+        NotFoundLinkDocs.Add(GetLinkName(aLink))        
     
     #print 'PATH - ' + theLinkPath
     #print 'NAME - ' + theLinkName
@@ -236,7 +280,6 @@ for aLink in theLinks:
 #Print the Link Log to the Screen
 print linklog  
 
-#Testing
 
 #If the Link was unloaded prior to being up-revved - reistate.
   #if not isloaded:
@@ -246,5 +289,11 @@ if NotWorksharedLinks.Count > 0:
   for nwl in NotWorksharedLinks:
     print nwl
 
-
+if NotFoundLinkDocs.Count > 0:
+  print '\nThe Following Links were not found.'
+  print 'These may be Unloaded.'
+  print 'Reload and try again'
+  print ':'
+  for l in NotFoundLinkDocs:
+    print l
 
