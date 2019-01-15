@@ -14,9 +14,18 @@
 #  January 2019
 #
 #========================================================================#
-import os
+import os 
+import fnmatch
 #------------------------------------------------------------------------#
 def GetAllLinks():
+  """
+  Params : 
+    No Input Parameters Works on current ActiveDocument
+  Returns: 
+    A [List] of all of the RevitLinkType elements that contain
+    the text string '-RVT-' ensuring that all consultant links
+    are included but no BVN links.
+  """
   theLinks = (
     FilteredElementCollector(doc)
     .OfCategory(BuiltInCategory.OST_RvtLinks)
@@ -24,9 +33,17 @@ def GetAllLinks():
     .Where(lambda link: (RevitLinkType == type(link)) and not(link.IsNestedLink))
     )
     
+  theLinks = theLinks.Where(lambda link: Element.Name.GetValue(link).Contains('-RVT-'))
+    
   return theLinks.ToList()
 #------------------------------------------------------------------------#
 def GetLinkName(aLink):
+  """
+  Params  :
+    aLink - RevitLinkType
+  Returns :
+    Returns the name of the Revit Link file
+  """
   #return [x.strip() for x in Element.Name.GetValue(aLink).split(':')]
   return Element.Name.GetValue(aLink)
 #------------------------------------------------------------------------#
@@ -93,7 +110,7 @@ def GetLatestRevisionFromFolder(aLink):
     #             if fn.StartsWith(filestart)]
     
     #something like this
-    filenames = fnmatch.filter(os.listdir(path), filestart + '*.rvt')
+    filenames = fnmatch.filter(os.listdir(folderpath), filestart + '*.rvt')
     
     #filenames = GetCandidateRevisions(contents)
     
@@ -230,10 +247,12 @@ for aLink in theLinks:
         if linkdoc.IsWorkshared:
           #If the link is Workshared we need to make sure we match any closed Worksets
           #--------print 'Getting the Workset Status of the link:' + linkdoc.Title
+          
           #Get the List of Closed Worksets
           closedWS = GetClosedWorksetIds(linkdoc)
           wc = WorksetConfiguration()
           wc.Close(closedWS)
+          
           #worksetinfo(linkdoc)
           linklog = linklog + '\nClosed Worksets as follows:'
           linklog = linklog + LogListClosedWorksets(linkdoc,closedWS)
@@ -241,7 +260,10 @@ for aLink in theLinks:
           #Relink From the New Revision with Workset Control
           print newFilePath
           modelpath = ModelPathUtils.ConvertUserVisiblePathToModelPath(newFilePath)
-          aLink.LoadFrom(modelpath, wc)
+          #using the WorksetConfiguration.
+          #aLink.LoadFrom(modelpath, wc)
+          #Using null
+          aLink.LoadFrom(modelpath, None)
           
           #If File was originally unloaded the reset to Unloaded
           #if not(isloaded):
