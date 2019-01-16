@@ -3,6 +3,7 @@
 theWorksets = (
 FilteredWorksetCollector(doc)
 .Where(lambda w: w.Kind == WorksetKind.UserWorkset)
+.OrderBy(lambda w: w.Name)
 )
 
 print ' +------------+-------------------------------------------+'
