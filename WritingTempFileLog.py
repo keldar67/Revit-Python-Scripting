@@ -8,7 +8,7 @@ def GetRevitVersionNumber():
 
 theversion = GetRevitVersionNumber()
 theModelName = doc.Title[:doc.Title.LastIndexOf('_')]
-timestamp = datetime.datetime.now().strftime("(%Y-%m-%d - %H-%M)")
+timestamp = datetime.datetime.now().strftime("(%Y-%m-%d - %H-%M-%S)")
 thePath = r'C:\Revit_Local' + theversion + '\\' + theModelName + '_ReloadLinks_' + timestamp + '.log'
 
 print thePath
