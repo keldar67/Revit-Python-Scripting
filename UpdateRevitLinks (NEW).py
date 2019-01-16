@@ -211,10 +211,6 @@ LogSeparator = '+' + '-'*80 + '+'
 #Get All of the current open documents
 theDocuments = GetLinkedDocuments()
 
-#for aDocument in theDocuments:
-#  print aDocument
-#  print theDocuments[aDocument]
-
 # Get All of the Links (LinkTypes Only)
 theLinks = GetAllLinks()
 
@@ -226,10 +222,6 @@ linklog = linklog + '\n' + LogSeparator
 for aLink in theLinks:
   theLinkPath = GetLinkFolderPath(aLink)
   theLinkName = GetLinkName(aLink)
-  
-  
-  #linklog = linklog + '\n'
-  #linklog = linklog + '\n'
   
   if '8.0 Revit Links' in theLinkPath:
   
@@ -277,7 +269,7 @@ for aLink in theLinks:
           linklog = linklog + LogListClosedWorksets(linkdoc,closedWS)
           
           #Relink From the New Revision with Workset Control
-          print newFilePath
+          #print newFilePath
           modelpath = ModelPathUtils.ConvertUserVisiblePathToModelPath(newFilePath)
           #using the WorksetConfiguration.
           #aLink.LoadFrom(modelpath, wc)
@@ -288,7 +280,6 @@ for aLink in theLinks:
           #if not(isloaded):
           #  linklog = linklog + '\nResetting the Link to UNLOADED.'
           #  aLink.Unload(null)
-          
           
         else:
           NotWorksharedLinks.Add(GetLinkName(aLink))
@@ -302,16 +293,7 @@ for aLink in theLinks:
       else:
         linklog = linklog + '\nlinkDoc Not Found'  
         NotFoundLinkDocs.Add(GetLinkName(aLink))        
-    
-    #print 'PATH - ' + theLinkPath
-    #print 'NAME - ' + theLinkName
-    #print 'CREV - ' + theLinkCurrentRev.ToString()
-    #print '-' * 50
-    #print 'NewPATH - ' + newLinkPath
-    #print 'newNAME - ' + newLinkName
-    #print 'NRev - ' + NewRevision.ToString()
-    #print '-' * 75
-    
+
     linklog = linklog + '\n' + LogSeparator
     
   else:
@@ -323,11 +305,13 @@ for aLink in theLinks:
   #if not isloaded:
   #  aLink.Unload('Need to figure out how to use this method)
 
+#List any non-Workshared links
 if NotWorksharedLinks.Count > 0:
   linklog = linklog + '\nThe Following Links are not workshared...!!\n'
   for nwl in NotWorksharedLinks:
     linklog = linklog + '\n' + nwl
 
+#List any files that weren't found and need manual attention
 if NotFoundLinkDocs.Count > 0:
   linklog = linklog + '\nThe Following Links were not found.'
   linklog = linklog + 'These may be Unloaded.'
@@ -335,7 +319,6 @@ if NotFoundLinkDocs.Count > 0:
   linklog = linklog + ':'
   for l in NotFoundLinkDocs:
     linklog = linklog + '\n' + l
-
 
 #Print the Link Log to the Log File
 CreateLogFile(linklog)
