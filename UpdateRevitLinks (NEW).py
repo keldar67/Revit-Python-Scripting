@@ -14,8 +14,11 @@
 #  January 2019
 #
 #========================================================================#
-import os 
+import os
+import os.path
 import fnmatch
+import time, datetime
+import subprocess as sp
 #------------------------------------------------------------------------#
 def GetAllLinks():
   """
@@ -183,7 +186,23 @@ def LogListClosedWorksets(linkdoc, wslist):
   
   return wlist
 #------------------------------------------------------------------------#
+def CreateLogFile(logtext):
 
+  #Establish the Log Filename
+  theversion = uiapp.Application.VersionNumber
+  theModelName = doc.Title[:doc.Title.LastIndexOf('_')]
+  timestamp = datetime.datetime.now().strftime("(%Y-%m-%d - %H-%M-%S)")
+  thePath = r'C:\Revit_Local' + theversion + '\\' + theModelName + '_ReloadLinks_' + timestamp + '.log'
+
+  #Open, Write to the File & Close
+  fp = open(thePath, 'w')
+  fp.write(logtext)
+  fp.close()
+  
+  #Then Open in Notepad.exe
+  NotepadCommandString = 'notepad.exe' 
+  logfile = thePath
+  sp.Popen([NotepadCommandString,logfile])
 #------------------------------------------------------------------------#
 NotWorksharedLinks = []
 NotFoundLinkDocs = []
@@ -299,23 +318,24 @@ for aLink in theLinks:
     pass
     #print '... not a Revit Link'
 
-#Print the Link Log to the Screen
-print linklog  
-
 
 #If the Link was unloaded prior to being up-revved - reistate.
   #if not isloaded:
   #  aLink.Unload('Need to figure out how to use this method)
+
 if NotWorksharedLinks.Count > 0:
-  print '\nThe Following Links are not workshared...!!\n'
+  linklog = linklog + '\nThe Following Links are not workshared...!!\n'
   for nwl in NotWorksharedLinks:
-    print nwl
+    linklog = linklog + '\n' + nwl
 
 if NotFoundLinkDocs.Count > 0:
-  print '\nThe Following Links were not found.'
-  print 'These may be Unloaded.'
-  print 'Reload and try again'
-  print ':'
+  linklog = linklog + '\nThe Following Links were not found.'
+  linklog = linklog + 'These may be Unloaded.'
+  linklog = linklog + 'Reload and try again'
+  linklog = linklog + ':'
   for l in NotFoundLinkDocs:
-    print l
+    linklog = linklog + '\n' + l
 
+
+#Print the Link Log to the Log File
+CreateLogFile(linklog)
