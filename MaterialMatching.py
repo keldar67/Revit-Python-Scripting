@@ -30,6 +30,16 @@ def GetRGB(theColor):
   col = col + theColor.Blue.ToString()
   return col
 #--------------------------------------------------------------------------
+def GetPatternName(thePatternId):
+  patName = ''
+  if ElementId.InvalidElementId == thePatternId:
+    patName = '<None>'
+  else:
+    patName = doc.GetElement(thePatternId).Name
+    
+  return patName
+    
+#--------------------------------------------------------------------------
 def GetPatterns(theMaterial):
   print 'SURFACE PATTERN'
   print 'ForeGround'
@@ -41,10 +51,10 @@ def GetPatterns(theMaterial):
   print '\n'
   print 'CUT PATTERN'
   print 'ForeGround'
-  print 'Pattern: ' + doc.GetElement(mat.CutForegroundPatternId).Name
+  print 'Pattern: ' + GetPatternName(theMaterial.CutForegroundPatternId)
   print 'Color: ' + GetRGB(theMaterial.CutForegroundPatternColor)
   print 'Background'
-  print 'Pattern: ' + doc.GetElement(mat.CutBackgroundPatternId).Name
+  print 'Pattern: ' + GetPatternName(theMaterial.CutBackgroundPatternId)
   print 'Color: '+ GetRGB(theMaterial.CutBackgroundPatternColor)
   
   
