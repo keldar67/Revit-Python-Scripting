@@ -192,7 +192,7 @@ def CreateLogFile(logtext):
   theversion = uiapp.Application.VersionNumber
   theModelName = doc.Title[:doc.Title.LastIndexOf('_')]
   timestamp = datetime.datetime.now().strftime("(%Y-%m-%d - %H-%M-%S)")
-  thePath = r'C:\Revit_Local' + theversion + '\\' + theModelName + '_ReloadLinks_' + timestamp + '.log'
+  thePath = r'X:\003 - Multiplex\Design\BIM\_Revit\8.0 Revit Links\1.0 MPX\000 LOGS' + '\\' + theModelName + '_ReloadLinks_' + timestamp + '.log'
 
   #Open, Write to the File & Close
   fp = open(thePath, 'w')
