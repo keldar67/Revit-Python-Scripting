@@ -206,6 +206,7 @@ def CreateLogFile(logtext):
 #------------------------------------------------------------------------#
 NotWorksharedLinks = []
 NotFoundLinkDocs = []
+BADModels = []
 
 LogSeparator = '+' + '-'*80 + '+'
 #Get All of the current open documents
@@ -286,8 +287,14 @@ for aLink in theLinks:
           linklog = linklog + '\nThis file is NOT Workshared...!'
           #Relink From the New Revision (No Workset Control)
           modelpath = ModelPathUtils.ConvertUserVisiblePathToModelPath(newFilePath)
-          aLink.LoadFrom(modelpath, WorksetConfiguration())
-          
+          try:
+            aLink.LoadFrom(modelpath, WorksetConfiguration())
+          except Exception as e:
+            BADModels.append((GetLinkName(aLink), e.message))
+            linklog = linklog + "ERROR LOADING MODEL"
+            linklog = linklog + e.message
+            print e.message
+            
           #If File was originally unloaded the reset to Unloaded
           
       else:
@@ -314,11 +321,18 @@ if NotWorksharedLinks.Count > 0:
 #List any files that weren't found and need manual attention
 if NotFoundLinkDocs.Count > 0:
   linklog = linklog + '\nThe Following Links were not found.'
-  linklog = linklog + 'These may be Unloaded.'
-  linklog = linklog + 'Reload and try again'
+  linklog = linklog + '\nThese may be Unloaded.'
+  linklog = linklog + '\nReload and try again'
   linklog = linklog + ':'
   for l in NotFoundLinkDocs:
     linklog = linklog + '\n' + l
 
+if BADModels.Count > 0:
+  linklog = linklog + '\nThe Following Links could not be loaded.'
+  for m in BADModels:
+      linklog = linklog + '\n' + m[0]
+      linklog = linklog + '\n' + m[1]
+      
 #Print the Link Log to the Log File
 CreateLogFile(linklog)
+print linklog
