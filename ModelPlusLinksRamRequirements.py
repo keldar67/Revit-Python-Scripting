@@ -58,6 +58,9 @@ def GetLinkSize(aLink):
 def GetCentralModelName():
   return doc.Title[:doc.Title.LastIndexOf('_')] + '.rvt'
 #------------------------------------------------------------------------#
+def GetLinkName(aLink):
+  return Element.Name.GetValue(aLink)
+#------------------------------------------------------------------------#
 def GetNameColumnWidth(theLinkTypes):
   docTitle = GetCentralModelName()
   NameLength = len(docTitle)
@@ -78,9 +81,26 @@ def GetIdColumnWidth(theLinkTypes):
     
   return idLength
 #------------------------------------------------------------------------#
+def GetSizeColumnWidth(output):
+  bi = 0
+  kb = 0
+  mb = 0
+  
+  for o in output.values():
+    print o
+    if o[0] > bi: bi = o[0]
+    if o[1] > kb: kb = o[1]
+    if o[2] > mb: mb = o[2]
+    
+    
+  return len(str(bi)), len(str(kb)), len(str(mb))
+    
+#------------------------------------------------------------------------#
 documents = doc.Application.Documents
 TopLevelLinks = []
 NestedLinks = []
+#Dict for output data
+output = {}
 
 RamSize = 0L
 
@@ -104,6 +124,23 @@ for aLink in theLinkTypes:
   #Get Link Size
   linksize = GetLinkSize(aLink)
   
+  #Populate the Data Dictionary
+  output.update(
+      {
+      #Name
+      GetLinkName(aLink):
+        #List of Size in various Formats
+        [
+        #bytes
+        linksize,
+        #kilobytes
+        SizeInKiloBytes(linksize),
+        #megabytes
+        SizeInMegaBytes(linksize)
+        ]
+      }
+    )
+  
   RamSize += linksize
   
   print '[' + x + '][' + aLink.Id.ToString() + '] ' + Element.Name.GetValue(aLink) + ' [' + SizeInKiloBytes(linksize).ToString() + ']'
@@ -116,6 +153,7 @@ RamRequired = 20* activemodelsize
 #Get formatting for tabulating the output
 ColIdWidth = GetIdColumnWidth(theLinkTypes)
 ColNameWidth = GetNameColumnWidth(theLinkTypes)
+ColWidthBi, ColWidthKB, ColWidthMB = GetSizeColumnWidth(output)
 
 print 'Id  : ' + ColIdWidth.ToString()
 print 'Name: ' + ColNameWidth.ToString()
@@ -128,15 +166,15 @@ print 'Total Ram Required = ' + SizeInKiloBytes(RamSize + RamRequired).ToString(
 
 #------------------------------------------------------------------------#
 def Horizontal():
-  print '+' + '-' * (ColIdWidth + 2) + '+' + '-' * (ColNameWidth + 2) + '+'
+  print '+' + '-' * (ColIdWidth + 2) + '+' + '-' * (ColNameWidth + 2) + '+' + '-' * (ColWidthKB + 2) + '+' + '-' * (ColWidthMB + 2) + '+' + '-' * (ColWidthBi + 2) + '+'
 #------------------------------------------------------------------------#
 def HorizontalBlank():
-  print '|' + ' ' * (ColIdWidth + 2) + '|' + ' ' * (ColNameWidth + 2) + '|'
+  print '|' + ' ' * (ColIdWidth + 2) + '|' + ' ' * (ColNameWidth + 2) + '|' + ' ' * (ColWidthKB + 2)
 #------------------------------------------------------------------------#
 Horizontal()
 
 # Print Active Model as Title
-print '| ' + 'Id'.center(ColIdWidth) + ' | ' + GetCentralModelName().ljust(ColNameWidth) + ' |'
+print '| ' + 'Id'.center(ColIdWidth) + ' | ' + GetCentralModelName().ljust(ColNameWidth) + ' | ' + 'kb'.center(ColWidthKB) + ' | ' + 'MB'.center(ColWidthMB) + ' | ' + 'bytes'.center(ColWidthBi) + ' |'
 
 Horizontal()
 
@@ -144,7 +182,7 @@ Horizontal()
 for l in TopLevelLinks:
   id = l.Id.ToString()
   name = Element.Name.GetValue(l)
-  print '| ' + id.rjust(ColIdWidth) + ' | ' + name.ljust(ColNameWidth) + ' |'
+  print '| ' + id.rjust(ColIdWidth) + ' | ' + name.ljust(ColNameWidth) + ' | ' + str(output[name][1]).rjust(ColWidthKB) + ' | ' + str(output[name][2]).rjust(ColWidthMB) + ' | ' + str(output[name][0]).rjust(ColWidthBi) + ' |'
 
 Horizontal()
 
