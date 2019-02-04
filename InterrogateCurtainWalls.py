@@ -1,4 +1,36 @@
 ﻿#-----------------------------------------------------------------------------------+
+def GetCellWidth(Curve):
+  #Grab the curves running in a positive X direction only
+  direction = XYZ(1,0,0)
+  width = 0
+  for c in Curve:
+    if c.Direction.IsAlmostEqualTo(direction):
+      width += c.Length
+  
+  return width * 304.8 #<---<< Convert ft to mm
+#-----------------------------------------------------------------------------------+
+def GetCellHeight(Curve):
+  #Grab the curves running in a positive Z direction only
+  direction = XYZ(0,0,1)
+  height = 0
+  for c in Curve:
+    if c.Direction.IsAlmostEqualTo(direction):
+      height += c.Length
+  
+  return height * 304.8 #<---<< Convert ft to mm
+#-----------------------------------------------------------------------------------+
+def GetCellWidthAndHeight(aCell):
+  
+  curves = aCell.CurveLoops
+  for curve in curves:
+    for edge in curve:
+      ft = edge.Length
+      mm = (ft * 304.8)+0.
+      
+      
+          
+  return result
+#-----------------------------------------------------------------------------------+
 def AnalyzeCurtainWallCell(aCell):
   result = True
   curves = aCell.CurveLoops
