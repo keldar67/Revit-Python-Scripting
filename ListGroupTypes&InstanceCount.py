@@ -1,4 +1,17 @@
-﻿
+﻿#========================================================================#
+#      _____               __                            
+#      \_   \__ _ _ __     \ \  __ _ _ __ ___   ___  ___ 
+#       / /\/ _` | '_ \     \ \/ _` | '_ ` _ \ / _ \/ __|
+#    /\/ /_| (_| | | | | /\_/ / (_| | | | | | |  __/\__ \
+#    \____/ \__,_|_| |_| \___/ \__,_|_| |_| |_|\___||___/
+#
+#
+#  The Script lists all Model and Detail Group Types and the number of 
+#  instances for each type. Totals at the bottom of each listing.
+#
+#  December 2018
+#
+#========================================================================#
 
 theDetailGroups = (
   FilteredElementCollector(doc)
@@ -21,7 +34,7 @@ print '==== DETAIL GROUPS ===='
 
 if theDetailGroups.Count() > 0:
   for aDetGroup in theDetailGroups:
-    print type(aDetGroup)
+    #print type(aDetGroup)
     if not(aDetGroup.Name in detGroupInstances):
       #Create a new entry in the dictionary if it doesn't exist
       #Using the Group Name as the Key
