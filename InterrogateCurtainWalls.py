@@ -19,6 +19,8 @@ def GetCellHeight(Curve):
   
   return height * 304.8 #<---<< Convert ft to mm
 #-----------------------------------------------------------------------------------+
+# Add function to find smallest curve edge length and therefor the smallest cell
+#-----------------------------------------------------------------------------------+
 def GetCellWidthAndHeight(aCell):
   
   curves = aCell.CurveLoops
@@ -27,6 +29,7 @@ def GetCellWidthAndHeight(aCell):
       ft = edge.Length
       mm = (ft * 304.8)+0.
       
+      #Re-write this function to use the two functions above to grab the width & height
       
           
   return result
