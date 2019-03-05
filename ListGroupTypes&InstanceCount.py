@@ -12,6 +12,8 @@
 #  December 2018
 #
 #========================================================================#
+import collections
+from collections import OrderedDict
 
 theDetailGroups = (
   FilteredElementCollector(doc)
@@ -44,6 +46,9 @@ if theDetailGroups.Count() > 0:
     else:
       #If the group type already exists within the dictionary, just add the ElementId
       detGroupInstances[aDetGroup.Name].append(aDetGroup.Id)
+      
+      #Sort the dict alphabetically <-- Needs work... currently truncating the dict... need to figure out why
+      #detGroupInstances = detGroupInstances(sorted(detGroupInstances.items()))
   
   #Print the dictionary out
   for k,v in detGroupInstances.iteritems():
@@ -68,7 +73,10 @@ if theModelGroups.Count() > 0:
       modGroupInstances[aModGroup.Name].append(aModGroup.Id)
     else:
       #If the group type already exists within the dictionary, just add the ElementId
-      detGroupInstances[aModGroup.Name].append(aModGroup.Id)
+      modGroupInstances[aModGroup.Name].append(aModGroup.Id)
+      
+      #Sort the dict alphabetically <-- Needs work... currently truncating the dict... need to figure out why
+      #modGroupInstances = collections.OrderedDict(sorted(modGroupInstances.items(), key=lambda x: x[0]))
   
   #Print the dictionary out
   for k,v in modGroupInstances.iteritems():
