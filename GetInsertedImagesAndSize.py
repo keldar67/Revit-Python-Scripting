@@ -21,8 +21,19 @@ theImages = (
   .OfCategory(BuiltInCategory.OST_RasterImages)
   .OrderBy(lambda i: Element.Name.GetValue(i))
   )
-  
+
+imageTypes = []
+imageInstances = []
+
+#Sort the Image Types from the instances
 for anImage in theImages:
+  if ImageType == type(anImage):
+    imageTypes.Add(anImage)
+  else:
+    imageInstances.Add(anImage)
+    
+
+for anImage in imageTypes:
   #Initialise the size at zero
   theSize = 0
   try:
@@ -36,4 +47,4 @@ for anImage in theImages:
   theName = Element.Name.GetValue(anImage)
   
   #Print to screen
-  print theName + ' - ' + str(theSize)
+  print theName + '\t' + thePath + '\t' + str(theSize)

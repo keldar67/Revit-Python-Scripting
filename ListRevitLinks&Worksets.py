@@ -12,6 +12,25 @@
 #  December 2018
 #
 #========================================================================#
+
+#------------------------------------------------------------------------#
+def GetPathServer(aLink):
+  pass
+#------------------------------------------------------------------------#
+def GetPathCloud(aLink):
+  ld = aLink.GetLinkDocument()
+  mp = ld.GetCloudModelPath()
+  p = ModelPathUtils.ConvertCloudGUIDsToCloudPath(mp.GetProjectGUID(),mp.GetModelGUID())
+  
+  return ModelPathUtils.ConvertModelPathToUserVisiblePath(p)
+#------------------------------------------------------------------------#
+def GetLinkPath(aLink):
+  if aLink.GetLinkDocument().IsModelInCloud:
+    linkpath = GetPathCloud(aLink)
+  else:
+    linkpath = GetPathServer(aLink)
+    
+  return linkpath
 #------------------------------------------------------------------------#
 def GetAllLinks():
   theLinks = (
@@ -28,15 +47,19 @@ def GetLinkName(aLink):
   #return [x.strip() for x in Element.Name.GetValue(aLink).split(':')]
   return Element.Name.GetValue(aLink)
 #------------------------------------------------------------------------#
-def main()""
-	theLinks = GetAllLinks()
-	wst = doc.GetWorksetTable()
-
-	for aLink in theLinks:
-	  linkname = GetLinkName(aLink)
-	  wsetname = wst.GetWorkset(aLink.WorksetId).Name
-	  print linkname + '\t\t' + wsetname
-	  #print 
-	  #print 50 * '-'
+def main():
+  theLinks = GetAllLinks()
+  wst = doc.GetWorksetTable()
+  
+  for aLink in theLinks:
+    linkname = GetLinkName(aLink)
+    wsetname = wst.GetWorkset(aLink.WorksetId).Name
+    if GetLinkPath(aLink) == None: 
+      LPath = ""
+    else:
+      LPath = GetLinkPath(aLink)
+    print linkname + '\t\t' + wsetname + '\t\t' + LPath
+    #print 
+    #print 50 * '-'
 #------------------------------------------------------------------------#
 if __name__ == '__main__': main()
