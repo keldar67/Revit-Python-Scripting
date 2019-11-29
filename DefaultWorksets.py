@@ -6,28 +6,27 @@ AuditViewPrefix = '3DAV•WS - '
 #The New Worksets
 nw = []
 
-nw.append('02_Rooms')
-nw.append('03_Ceilings')
-nw.append('04_FF&E')
+nw.append('00_FACADE')
+nw.append('10_STRUCTURE')
+nw.append('20_VERTICAL CIRCULATION')
 
-nw.append('11_Structure Horizontal')
-nw.append('11_Structure Vertical')
-nw.append('11_Structure (other)')
+nw.append('30_INTERIOR')
+nw.append('40_FF&E')
+nw.append('50_SITE')
 
-nw.append('80_Scope Boxes Grid')
-nw.append('80_Scope Boxes Views')
+nw.append('51_ENTOURAGE')
+nw.append('60_MASSING')
 
-nw.append('90_Link Consultant – Consultant 01')
-nw.append('90_Link Consultant – Consultant 02')
-nw.append('90_Link Consultant – Consultant 03')
+#nw.append('70_SAFETY IN DESIGN')
 
-nw.append('91_Link_CAD – Cad Host Model 01')
-nw.append('91_Link_CAD – Cad Host Model 02')
-nw.append('91_Link_CAD – Cad Host Model 03')
+nw.append('90_LINK_BVN SITE')
+nw.append('90_LINK_BVN BUILDING')
 
-nw.append('99_Link – Other Project Model 01')
-nw.append('99_Link – Other Project Model 02')
-nw.append('99_Link – Other Project Model 03')
+nw.append('91_LINK_CONSULT_CONSULTANT_01')
+nw.append('91_LINK_CONSULT_CONSULTANT_02')
+
+nw.append('92_LINK_CAD HOST MODEL 01')
+nw.append('92_LINK_CAD HOST MODEL 02')
 
 #------------------------------------------------------------------------------------#
 def Create3DAuditView(worksetname):
@@ -156,18 +155,14 @@ def main():
     #Rename the two default Worksets
     lg = getWorksetByName('Shared Levels and Grids')
     if lg:
-      RenameWS(lg, '00_Shared Levels & Grids')
-        
-    w1 = getWorksetByName('Workset1')
-    if w1:
-      RenameWS(w1, '01_Architecture')
-    
+      RenameWS(lg, '99_LEVELS AND GRIDS')
+      
     #Create The Worksets  
     for n in nw:
       CreateWS(n)
       
     #Create Audit Views for Each Workset
-    CreateAuditViews()
+    #CreateAuditViews()
 
   else:
     print 'Sorry this file is not workset enabled'
