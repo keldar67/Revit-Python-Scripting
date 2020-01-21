@@ -47,4 +47,4 @@ for anImage in imageTypes:
   theName = Element.Name.GetValue(anImage)
   
   #Print to screen
-  print theName + '\t' + thePath + '\t' + str(theSize)
+  print theName + '\t Path = ' + thePath + '\t - filesize = ' + str(theSize)

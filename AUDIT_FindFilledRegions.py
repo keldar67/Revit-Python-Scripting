@@ -10,4 +10,4 @@ Filled = Regions.Where(lambda fr: 'Detail Filled Region'.Equals(fr.LookupParamet
 print 'Filled Regions : ' + Filled.Count().ToString()
 print 'Masking Regions: ' + Masking.Count().ToString()
 print '                 --------'
-print 'Total Regions  : ' + filledRegion.Count().ToString()
+print 'Total Regions  : ' + Regions.Count().ToString()
