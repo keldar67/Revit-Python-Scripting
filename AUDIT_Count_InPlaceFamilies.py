@@ -6,3 +6,5 @@ FilteredElementCollector(doc)
 )
 
 print inplaces.Count.ToString() + ' In Place Families in this Project'
+print '+-----------------------------------------+'
+for ip in inplaces: print ip.Name

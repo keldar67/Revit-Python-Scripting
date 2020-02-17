@@ -19,7 +19,7 @@ import time
 #------------------------------------------------------------------------------------#
 def processThings(theThings, thingName):
 
-  thingsSucess = []
+  thingsSuccess = []
   thingsNoParam = []
   thingsFailed = []
   thingsNoChange = []
@@ -42,8 +42,7 @@ def processThings(theThings, thingName):
           p.Set(False)
           tranny.Commit()
           tranny.Dispose()
-          #print 'Success!'
-          thingsSuccess.Add(id)
+          thingsSuccess.append(id)
         except Exception as e:
           if tranny.HasStarted:
             tranny.RollBack()
@@ -58,7 +57,7 @@ def processThings(theThings, thingName):
       #print "Column [" + id + "] Doesn't have the parameter"
   end = time.time()
   duration = end - start
-  print 'Results for type: ' + thingName + ' Processed in ' + duration.toString() + ' seconds'
+  print 'Results for type: ' + thingName + ' Processed in ' + duration.ToString() + ' seconds'
   print '------------------------------------------'
   print 'Parameters Changed  : ' + thingsSuccess.Count.ToString()
   print 'Failed Changes      : ' + thingsFailed.Count.ToString()
