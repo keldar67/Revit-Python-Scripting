@@ -114,10 +114,10 @@ for aView in theViews:
 sortedViews = sorted(theViews, key=lambda v: theViews[v][INDEX_TOTAL], reverse=True)
 
 # Print the Table Header
-print '+---------+---------+---------+---------+---------+-----------+---------------------------------------------------+'
-print '|TOTAL 2D |  DETAL  | FILLED  | MASKING |   TEXT  |  VIEWID   |  VIEW NAME'
-print '|ELEMENTS |  LINES  | REGIONS | REGIONS |   NOTES |           |'
-print '+---------+---------+---------+---------+---------+-----------+---------------------------------------------------+'
+print '+---------+---------+---------+---------+---------+-----------+------------+--------------------------------------+'
+print '|TOTAL 2D |  DETAL  | FILLED  | MASKING |   TEXT  |  VIEWID   |    VIEW    |  VIEW NAME'
+print '|ELEMENTS |  LINES  | REGIONS | REGIONS |   NOTES |           |    TYPE    |'
+print '+---------+---------+---------+---------+---------+-----------+------------+--------------------------------------+'
 
 for aView in sortedViews:
   #Convert the numbers to justified strings
@@ -128,9 +128,9 @@ for aView in sortedViews:
   textnote = theViews[aView][INDEX_TEXTNOTES].ToString().rjust(8)
   viewId = aView.ToString().rjust(10)
   viewname = Element.Name.GetValue(doc.GetElement(aView))
-  
+  viewtype = doc.GetElement(aView).GetType().Name.replace('View','').ljust(10)
   #Print each data row for each view
-  print '|' + theTotal + ' |' + detlines + ' |' + filledrg + ' |' + maskingr + ' |' + textnote + ' |' + viewId + ' | ' + viewname
+  print '|' + theTotal + ' |' + detlines + ' |' + filledrg + ' |' + maskingr + ' |' + textnote + ' |' + viewId + ' | ' + viewtype + ' | ' + viewname
 
 #Close the bottom of the table output
 print '+---------+---------+---------+---------+---------+-----------+---------------------------------------------------+'
