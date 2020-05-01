@@ -11,8 +11,9 @@ def ReportImportedCADs(document):
     print "-" * 75
     print "Document: '" + d.Title + "'"
     print
-    print "CAD Imports:"
+    #print "CAD Imports:"
     cads = list(GetImportedCADs(d))
+    print len(cads).ToString() + " Imported CAD Files\n"
     if len(cads) > 0:
       for cad in cads:
         view = d.GetElement(cad.OwnerViewId)

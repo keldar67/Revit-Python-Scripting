@@ -14,13 +14,13 @@
 #  Feb 2020
 #
 #================ EDIT THESE VALUES BEFORE RUNNING ======================#
-BVN_Project_Name = "UNSW STUDENT HOUSING"
-BVN_Project_Number = "1910014"
-BVN_Client = "SCAPE"
+BVN_Project_Name = "NORTH SHORE RESPONSE"
+BVN_Project_Number = "2003028"
+BVN_Client = "HEALTH INFRASTRUCTURE"
 BVN_Client_ProjectNumber = "TBC"
-BVN_Project_Type = "Student Accommodation"
-BVN_Building_Name = "Student Housing"
-BVN_MM_Model_Name = "BUILDING FILE"
+BVN_Project_Type = "HEALTH"
+BVN_Building_Name = "DOUGLAS BUILDING"
+BVN_MM_Model_Name = "DOUGLAS BUILDING FILE"
 #========================================================================#
 def setGlobalParameter(pname, pvalue):
   gpid = GlobalParametersManager.FindByName(doc,pname)
