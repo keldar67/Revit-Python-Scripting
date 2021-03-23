@@ -45,6 +45,8 @@ for anImage in imageTypes:
     pass
   #Grab the image Name  
   theName = Element.Name.GetValue(anImage)
-  
+  sizeString = theSize.ToString() if theSize > 0 else 'Unknown'
   #Print to screen
-  print theName + '\t Path = ' + thePath + '\t - filesize = ' + str(theSize)
+  print theName + '\t Path = ' + thePath + '\t - filesize = ' + sizeString
+  
+print '\nThere are ' + imageTypes.Count.ToString() + ' images loaded into this model'

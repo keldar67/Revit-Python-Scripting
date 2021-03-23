@@ -17,7 +17,7 @@ def ReportImportedCADs(document):
     if len(cads) > 0:
       for cad in cads:
         view = d.GetElement(cad.OwnerViewId)
-        print "  '" + cad.get_Parameter(BuiltInParameter.IMPORT_SYMBOL_NAME).AsString() + "'", ("'" + view.Name  + "'") if view is not None else "<NO VIEW>"
+        print cad.Id.ToString().rjust(10) + "  '" + cad.get_Parameter(BuiltInParameter.IMPORT_SYMBOL_NAME).AsString() + "'", ("'" + view.Name  + "'") if view is not None else "<NO VIEW>"
     else:
       print "  [NO CAD IMPORTS]"
     print "-" * 75

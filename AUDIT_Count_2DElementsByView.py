@@ -20,7 +20,7 @@
 #========================================================================#
 
 #----------------------------------------------------
-# Constant Valies for indices
+# Constant Values for indices
 #----------------------------------------------------
 INDEX_TOTAL = 0
 INDEX_DETAILLINES = 1
@@ -84,7 +84,7 @@ for fr in Filled:
     #Index [INDEX_FILLEDREGIONS] = Filled Regions
     theViews[viewId][INDEX_FILLEDREGIONS] += 1
 
-#Overlay the Filled Regions
+#Overlay the Masking Regions
 for mr in Masking:
   viewId = mr.OwnerViewId
   if not viewId in theViews:
@@ -104,7 +104,7 @@ for tx in TextNotes:
   else:
     # Increment the count of Filled Regions for this view
     #Index [INDEX_MASKINGREGIONS] = Masking Regions
-    theViews[viewId][INDEX_MASKINGREGIONS] += 1
+    theViews[viewId][INDEX_TEXTNOTES] += 1
 
 #Sum up all of the 2D elements into the total of each dict element
 for aView in theViews:
@@ -128,7 +128,8 @@ for aView in sortedViews:
   textnote = theViews[aView][INDEX_TEXTNOTES].ToString().rjust(8)
   viewId = aView.ToString().rjust(10)
   viewname = Element.Name.GetValue(doc.GetElement(aView))
-  viewtype = doc.GetElement(aView).GetType().Name.replace('View','').ljust(10)
+  v = doc.GetElement(aView)
+  viewtype = v.Title [:v.Title.find(':')].replace('View','').ljust(10)
   #Print each data row for each view
   print '|' + theTotal + ' |' + detlines + ' |' + filledrg + ' |' + maskingr + ' |' + textnote + ' |' + viewId + ' | ' + viewtype + ' | ' + viewname
 

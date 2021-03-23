@@ -4,7 +4,7 @@ theOptions = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Design
 optionSets = {}
 setCounter = 0
 
-print 'There are [' + theOptions.Count().ToString() + '] Design Options across [' + theOptionSets.Count().ToString() + '] Desin Option Sets in this model'
+print 'There are [' + theOptions.Count().ToString() + '] Design Options across [' + theOptionSets.Count().ToString() + '] Design Option Sets in this model'
 
 for anOption in theOptions:
   #If the Design Option Set is already recorded, just add the option to it's list of options
