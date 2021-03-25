@@ -263,7 +263,7 @@ app = uiapp.Application
 
 OKtoGO = True
 
-newFileBLDG = getNewfileName(BVN_Project_Number, BVN_projectAbbr, 'Building')
+newFileBLDG = getNewfileName(BVN_Project_Number, BVN_projectAbbr, 'BUILDING')
 newFileSITE = getNewfileName(BVN_Project_Number, BVN_projectAbbr, 'SITE')
 templateBVN = getBVNTemplate()
 

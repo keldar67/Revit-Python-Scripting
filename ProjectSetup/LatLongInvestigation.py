@@ -35,8 +35,8 @@ print 'Converted back to radians'
 print 
 print
 
-newLat = -27.46857 / (180/math.pi)
-newLon = 153.02969 / (180/math.pi)
+newLat = -33.790544323228964 / (180/math.pi)
+newLon = 151.13379474632916 / (180/math.pi)
 
 print newLat
 print newLon
