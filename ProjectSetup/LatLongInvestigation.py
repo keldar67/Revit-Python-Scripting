@@ -15,7 +15,7 @@
 #
 import math
 
-DoIt = False
+DoIt = True
 
 projectLocation = doc.ActiveProjectLocation
 siteLocation = projectLocation.GetSiteLocation()
@@ -35,8 +35,8 @@ print 'Converted back to radians'
 print 
 print
 
-newLat = -33.790544323228964 / (180/math.pi)
-newLon = 151.13379474632916 / (180/math.pi)
+newLat = -27.845359977804918 / (180/math.pi)
+newLon = 153.32163304098432 / (180/math.pi)
 
 print newLat
 print newLon

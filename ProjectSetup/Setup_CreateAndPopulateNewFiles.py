@@ -12,15 +12,15 @@
 #  March 2021
 #
 #================ EDIT THESE VALUES BEFORE RUNNING ======================#
-BVN_Project_Number =        '2103015'
-BVN_projectAbbr =           'ANX'
-BVN_Project_Name =          'The Annex BVN Studio'
+BVN_Project_Number =        '1901001'
+BVN_projectAbbr =           'BVN'
+BVN_Project_Name =          'Project Name'
 BVN_Client =                'BVN'
-BVN_Client_ProjectNumber =  '2103015'
-BVN_Project_Type =          'Commercial'
-BVN_Building_Name =         '12 Creek Street'
-BVN_MM_Model_Name_BLDG =    'The Annex Building'
-BVN_MM_Model_Name_SITE =    'The Annex Site'
+BVN_Client_ProjectNumber =  '1901001'
+BVN_Project_Type =          'Test'
+BVN_Building_Name =         'Test File Setup'
+BVN_MM_Model_Name_BLDG =    'Test CAD Link File'
+BVN_MM_Model_Name_SITE =    'Test CAD Link Site'
 #========================================================================#
 import os
 import datetime
@@ -78,6 +78,9 @@ def ShowDone():
   print(' |____/ \___/|_| \_|_____(_|_|_|_)')
   print('\n')
 #-------------------------------------------------------
+def isValidSurveyFolder(folder):
+  return (os.path.exists(folder) and os.path.isdir(folder))
+#-------------------------------------------------------
 def getNewfileName(BVN_Project_Number, BVN_projectAbbr, fname):
   # Get the Year that the Project Belongs to
   theYear = getYearFromProjectId(BVN_Project_Number)
@@ -94,6 +97,38 @@ def getNewfileName(BVN_Project_Number, BVN_projectAbbr, fname):
   theName = theName + '_'
   theName = theName + fname
   theName = theName + '.rvt'
+  
+  return theName
+#-------------------------------------------------------
+def getCADLINKfileName(BVN_Project_Number, BVN_projectAbbr, fname):
+  # Get the Year that the Project Belongs to
+  theYear = getYearFromProjectId(BVN_Project_Number)
+  
+  #Build the Proposed Path
+  theName = 'p:/'
+  theName = theName + theYear
+  theName = theName + '/'
+  theName = theName + BVN_Project_Number
+  theName = theName + '.000/Design/BIM/_Revit/4.0 CAD Links/AR_CADLINK_'
+  theName = theName + BVN_Project_Number
+  theName = theName + '_'
+  theName = theName + BVN_projectAbbr
+  theName = theName + '_'
+  theName = theName + fname
+  theName = theName + '.rvt'
+  
+  return theName
+#-------------------------------------------------------
+def getCADLinkSurveyFolder(BVN_Project_Number):
+  # Get the Year that the Project Belongs to
+  theYear = getYearFromProjectId(BVN_Project_Number)
+  
+  #Build the Proposed Path
+  theName = 'p:/'
+  theName = theName + theYear
+  theName = theName + '/'
+  theName = theName + BVN_Project_Number
+  theName = theName + '.000/Design/BIM/_Revit/4.0 CAD Links/SURVEY'
   
   return theName
 #=================GLOBAL & PROJECT PARAMETERS============================#
@@ -153,6 +188,51 @@ def setParams(doc, modelName):
   setProjectParameter(doc, "Original Model By","BVN")
   setProjectParameter(doc, "Project Type", BVN_Project_Type)
   setProjectParameter(doc, "Client Project Number",BVN_Client_ProjectNumber) 
+#-------------------------------------------------------
+def setBasicParams(doc, modelName):
+  #Set Global Parameters
+  setGlobalParameter(doc, "BVN_Project Name", BVN_Project_Name)
+  setGlobalParameter(doc, "BVN_Project Number", BVN_Project_Number)
+  setGlobalParameter(doc, "BVN_Client", BVN_Client)
+  if 'SITE' in modelName:
+    setGlobalParameter(doc, "BVN_MM_Model Name", BVN_MM_Model_Name_SITE)
+  else:
+    setGlobalParameter(doc, "BVN_MM_Model Name", BVN_MM_Model_Name_BLDG)
+
+#-------------------------------------------------------
+def AddBasicParameters(doc):
+  #Basic Parameters to be created in Non BVN Template Models
+  ParamNames = [
+    'BVN_Client',
+    'BVN_Project Number',
+    'BVN_Project Name',
+    'BVN_MM_Model Name'
+  ]
+
+  for aParam in ParamNames:
+    if GlobalParametersManager.IsUniqueName(doc,aParam):
+      try:
+        tranny = Transaction(doc)
+        tranny.Start('Creating Global Parameter: ' + aParam)
+        
+        # Create the New Global Parameter
+        GlobalParameter.Create(doc,aParam,ParameterType.Text)
+        
+        # Set the Group to Identity Data
+        #Get the Parameter First
+        # GROUPING NOT CURRENTLY WORKING...!!!
+        #theParam = doc.GetElement(GlobalParametersManager.FindByName(doc, aParam))
+        #theParam.GetDefinition().set_ParameterGroup(BuiltInParameterGroup.PG_IDENTITY_DATA)
+        
+        tranny.Commit()
+        tranny.Dispose()
+        print 'Adding Global Parameter: ' + aParam
+      except Exception as e:
+        print 'Ooops: \n' + e.message
+        tranny.RollBack()
+        tranny.Dispose()
+    else:
+      print 'Global Parameter Already Exists: ' + aParam
 #=================WORKSHARING AND WORKSETS============================#
 def getWorksetsBuilding():
   #The default worksets for a Building Model
@@ -187,8 +267,6 @@ def getWorksetsSite():
     
   return newWorksets
 #-------------------------------------------------------
-
-#-------------------------------------------------------
 def makeWorkshared(newModel, modelName):
   
   # Grab the appropriate worksets
@@ -206,8 +284,9 @@ def makeWorkshared(newModel, modelName):
   wst = newModel.GetWorksetTable()
   
   # Make sure that each of the newWorksets are unique
-  # and create them
-  for aWorkset in theWorksets:         # <---<< Modify this to skip first two worksets...!!!
+  # and create them the [2:] skips the first two which
+  # are created as the default worksets above
+  for aWorkset in theWorksets[2:]:
     #Make sure that the work doesn't already exist
     if wst.IsWorksetNameUnique(newModel,aWorkset):
       try:
@@ -259,12 +338,59 @@ def createBVNModel(modelName, templateBVN):
 
   newModel.Close(True)
 #-------------------------------------------------------
+def createCADLinkModel(modelName,TypeName):
+  # Create a new model from the Metric "None" template
+  unitsystem = UnitSystem.Metric
+  newModel = uiapp.Application.NewProjectDocument(unitsystem)
+  
+  # Set the Project and Global Parameters
+  AddBasicParameters(newModel)
+  setBasicParams(newModel, modelName)
+  
+  # Create Worksets and make worksharing
+  #makeWorkshared(newModel, modelName)
+  # Enable Worksharing and create the default Worksets
+  newModel.EnableWorksharing('99_LEVELS AND GRIDS',TypeName)
+  
+  # Make the Worksharing Options
+  WSAO = WorksharingSaveAsOptions()
+  WSAO.SaveAsCentral = True
+  options = SaveAsOptions()
+  options.SetWorksharingOptions(WSAO)
+  
+  # Save the Model and Close it
+  newModel.SaveAs(modelName, options)
+  
+  # Synch and Relinquish Worksets
+  relinqOptions = RelinquishOptions(True)
+  relinqOptions.UserWorksets = True
+  
+  #Synch Settings including message and Compact the File.
+  synch = SynchronizeWithCentralOptions()
+  synch.Comment = 'BVN Central Model Created at ' + datetime.datetime.now().isoformat()
+  synch.Compact = True
+  synch.SaveLocalBefore = False
+  synch.SetRelinquishOptions(relinqOptions)
+  
+  transact = TransactWithCentralOptions()
+  
+  newModel.SynchronizeWithCentral(transact, synch)
+
+  newModel.Close(True)
+#-------------------------------------------------------
 app = uiapp.Application
 
 OKtoGO = True
 
+# New Project Files
 newFileBLDG = getNewfileName(BVN_Project_Number, BVN_projectAbbr, 'BUILDING')
 newFileSITE = getNewfileName(BVN_Project_Number, BVN_projectAbbr, 'SITE')
+
+# New CAD Link Files
+newFileCADLinks = getCADLINKfileName(BVN_Project_Number, BVN_projectAbbr, 'CADLinks')
+newFileSURVEY = getCADLINKfileName(BVN_Project_Number, BVN_projectAbbr, 'SURVEY')
+
+# The Template File
 templateBVN = getBVNTemplate()
 
 # Make sure that the path to the template is valid
@@ -293,11 +419,27 @@ if os.path.exists(newFileSITE):
   OKtoGO = False
   print 'File Already Exists:\n' + newFileSITE
 
+# Make sure that a 'SURVEY' folder exists in the CAD Links folder
+folder = getCADLinkSurveyFolder(BVN_Project_Number)
+if not isValidSurveyFolder(folder):
+  os.mkdir(folder)
+  os.mkdir(folder + '/CAD')
+else:
+  if not os.path.exists(folder + '/CAD'):
+    os.mkdir(folder + '/CAD')
 
+
+# If ALL of the above checks are good then we can make some files
 if OKtoGO:
-  #Create the new Models
+  #Create the new Models in Project Files
   createBVNModel(newFileBLDG, templateBVN)
   createBVNModel(newFileSITE, templateBVN)
+
+  #Create the new Models in CAD Links
+  createCADLinkModel(newFileSURVEY,'SURVEY')
+  createCADLinkModel(newFileCADLinks,'CADLinks')
+  
+  #Show when done
   ShowDone()
   
 
