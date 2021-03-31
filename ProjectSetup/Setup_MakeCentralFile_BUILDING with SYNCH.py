@@ -34,6 +34,12 @@ doc.EnableWorksharing('99_LEVELS AND GRIDS','30_INTERIOR')
 #Get the Workset Table
 wst = doc.GetWorksetTable()
 
+#List for worksets we are going to create
+wslist = []
+
+#Workset Config to open the workset on creation
+wsconfig = WorksetConfiguration()
+  
 # Make sure that each of the newWorksets are unique
 # and create them
 for aWorkset in newWorksets:
@@ -43,14 +49,19 @@ for aWorkset in newWorksets:
       tranny = Transaction(doc)
       tranny.Start('Creating Workset ' + aWorkset)
       #Create the Workset
-      Workset.Create(doc,aWorkset)
+      ws = Workset.Create(doc,aWorkset)
       tranny.Commit()
+      #Add the new Workset WorksetId to the list
+      wslist.Append(ws.Id)
     except Exception  as e:
       print e.message
       tranny.RollBack()
       tranny.Dispose()
   else:
     print aWorkset + 'Already Exists'
+
+#Set the new Worksets to open
+wsconfig.Open(wslist)
 
 #Save the Document  
 doc.Save()

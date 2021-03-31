@@ -21,9 +21,11 @@ BVN_Project_Type =          'Test'
 BVN_Building_Name =         'Test File Setup'
 BVN_MM_Model_Name_BLDG =    'Test CAD Link File'
 BVN_MM_Model_Name_SITE =    'Test CAD Link Site'
+BVN_LatLong = 53.5614228062953, -2.1142019557370655
 #========================================================================#
 import os
 import datetime
+import math
 
 #Convert all of the parameter variables to uppercase.
 BVN_Project_Number = BVN_Project_Number.upper()
@@ -35,6 +37,14 @@ BVN_Project_Type = BVN_Project_Type.upper()
 BVN_Building_Name = BVN_Building_Name.upper()
 BVN_MM_Model_Name_BLDG = BVN_MM_Model_Name_BLDG.upper()
 BVN_MM_Model_Name_SITE = BVN_MM_Model_Name_SITE.upper()
+
+#Get Lat and Lon 
+lat = BVN_LatLong[0]
+lon = BVN_LatLong[1]
+
+#Convert Lat & Lon to radians for use in Revit.
+BVN_Lat = lat / (180/math.pi)
+BVN_Lon = lon / (180/math.pi)
 #-------------------------------------------------------
 def getYearFromProjectId(projectId):
   return projectId [:2]
@@ -198,7 +208,12 @@ def setBasicParams(doc, modelName):
     setGlobalParameter(doc, "BVN_MM_Model Name", BVN_MM_Model_Name_SITE)
   else:
     setGlobalParameter(doc, "BVN_MM_Model Name", BVN_MM_Model_Name_BLDG)
-
+  
+  #Set Project Parameters
+  setProjectParameter(doc, "Client Name", BVN_Client)
+  setProjectParameter(doc, "Project Name",BVN_Project_Name)
+  setProjectParameter(doc, "Project Number",BVN_Project_Number)
+  setProjectParameter(doc, "Building Name",BVN_Building_Name)
 #-------------------------------------------------------
 def AddBasicParameters(doc):
   #Basic Parameters to be created in Non BVN Template Models
@@ -283,6 +298,12 @@ def makeWorkshared(newModel, modelName):
   #Get the Workset Table
   wst = newModel.GetWorksetTable()
   
+  #List for worksets we are going to create
+  wslist = []
+  
+  #Workset Config to open the workset on creation
+  wsconfig = WorksetConfiguration()
+
   # Make sure that each of the newWorksets are unique
   # and create them the [2:] skips the first two which
   # are created as the default worksets above
@@ -293,14 +314,38 @@ def makeWorkshared(newModel, modelName):
         tranny = Transaction(newModel)
         tranny.Start('Creating Workset ' + aWorkset)
         #Create the Workset
-        Workset.Create(newModel,aWorkset)
+        ws = Workset.Create(newModel,aWorkset)
         tranny.Commit()
+        #Add the new Workset WorksetId to the list
+        wslist.Append(ws.Id)
       except Exception  as e:
         print e.message
         tranny.RollBack()
         tranny.Dispose()
     else:
       print aWorkset + ' Already Exists'
+      
+    #Set the new Worksets to open
+    wsconfig.Open(wslist)
+#-------------------------------------------------------
+def setLatLon(newModel):
+  print 'Setting Location'
+  
+  projectLocation = newModel.ActiveProjectLocation
+  siteLocation = projectLocation.GetSiteLocation()
+
+  tranny = Transaction(newModel)
+  try:
+    tranny.Start('Setting Coordinates')
+    siteLocation.Latitude = BVN_Lat
+    siteLocation.Longitude = BVN_Lon
+    if tranny.HasStarted():
+      tranny.Commit()
+      tranny.Dispose
+  except Exception as e:
+    print e.message
+    tranny.RollBack()
+    tranny.Dispose
 #-------------------------------------------------------
 def createBVNModel(modelName, templateBVN):
   # Create a new model from the chosen template
@@ -308,6 +353,7 @@ def createBVNModel(modelName, templateBVN):
   
   # Set the Project and Global Parameters
   setParams(newModel, modelName)
+  setLatLon(newModel)
   
   # Create Worksets and make worksharing
   makeWorkshared(newModel, modelName)
@@ -346,6 +392,7 @@ def createCADLinkModel(modelName,TypeName):
   # Set the Project and Global Parameters
   AddBasicParameters(newModel)
   setBasicParams(newModel, modelName)
+  setLatLon(newModel)
   
   # Create Worksets and make worksharing
   #makeWorkshared(newModel, modelName)
@@ -364,6 +411,7 @@ def createCADLinkModel(modelName,TypeName):
   # Synch and Relinquish Worksets
   relinqOptions = RelinquishOptions(True)
   relinqOptions.UserWorksets = True
+  relinqOptions.CheckedOutElements = True
   
   #Synch Settings including message and Compact the File.
   synch = SynchronizeWithCentralOptions()
