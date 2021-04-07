@@ -1,0 +1,360 @@
+{
+  "Uuid": "52078eb8-9207-494c-a88c-267af073f8ef",
+  "IsCustomNode": true,
+  "Category": "IAN",
+  "Description": "Gets Standard BVN FFE Schedules and also a list of room numbers",
+  "Name": "FFE Schedules & Room Numbers",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
+      "Id": "4909d77eb71c4898bcc29e9012887eb8",
+      "Inputs": [
+        {
+          "Id": "9e0ca89fc1d64e4ab0bba8821da1194e",
+          "Name": "list",
+          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a29ec73edbcd467eb603460fd5ee5559",
+          "Name": "index",
+          "Description": "Index of the item to be fetched.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "10269b3b0a0f433a93d8ba1f2a3b8ac8",
+          "Name": "item",
+          "Description": "Item in the list at the given index.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
+      "Id": "c690ca4408164d8b84b609495f10838b",
+      "Inputs": [
+        {
+          "Id": "22a12ee31bb34eeca9b3dbd00fe9c5df",
+          "Name": "list",
+          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c4ae288248ef49c493e9aa95a4234868",
+          "Name": "index",
+          "Description": "Index of the item to be fetched.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "703770dd2dfa47588a56bfdfb1641886",
+          "Name": "item",
+          "Description": "Item in the list at the given index.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\nclr.AddReference(\"RevitAPI\")\r\nfrom Autodesk.Revit.DB import *\r\n\r\n# Import DocumentManager and TransactionManager\r\nclr.AddReference(\"RevitServices\")\r\nimport RevitServices\r\nfrom RevitServices.Persistence import DocumentManager\r\nfrom RevitServices.Transactions import TransactionManager\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\nclr.AddReference(\"System\")\r\nimport System\r\n\r\nclr.AddReference(\"System.Core\")\r\nclr.ImportExtensions(System.Linq)\r\n\r\nfrom System.Collections.Generic import List\r\nfrom System.Collections.Generic import *\r\n#from System.Collections import Counter\r\nfrom System import String\r\n\r\n#------------------------------------------------------\r\ndef isValidRoomNumber(s):\r\n\treturn True\r\n#------------------------------------------------------\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\nroomNumbers = []\r\n\r\n# Get the Schedules\r\ntheSchedules = (\r\nFilteredElementCollector(doc)\r\n.OfCategory(BuiltInCategory.OST_Schedules)\r\n.Where(lambda s: (s.Name.StartsWith('FFE SCHEDULE') and not 'SERVICES' in s.Name))\r\n.ToList()\r\n)\r\n\r\n# Get the Room Numbers from the Schedules\r\nfor aSchedule in theSchedules:\r\n\tschedName = Element.Name.GetValue(aSchedule)\r\n\troomnumber = schedName[-9:]\r\n\tif isValidRoomNumber(roomnumber):\r\n\t\troomNumbers.Add(roomnumber)\r\n\r\n\r\n\r\noutput = []\r\noutput.Add(theSchedules)\r\noutput.Add(roomNumbers)\r\n\r\n\r\n# Assign your output to the OUT variable.\r\n#output = []\r\n\r\n\r\nOUT = output",
+      "VariableInputPorts": true,
+      "Id": "fc8ae8d13da64cf8b49d97faa60988f8",
+      "Inputs": [
+        {
+          "Id": "d88e3a8225d445ff9a42e5fc8ab9d25a",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8f072c488ab14a64befb76f1bf9a6a8a",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 1.0,
+      "Id": "736c2c7dc18647e09f1097e6a775650f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5e3ca5d4df334dddb0381cca14fb9cb7",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 0.0,
+      "Id": "840e17d9e6034824aa63c2634438d847",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c00729e20d8b437d9a60153a133a28ab",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "NodeType": "OutputNode",
+      "ElementResolver": null,
+      "Symbol": "Room Numbers",
+      "Id": "25d302bef0ca486c90de73d629099ddf",
+      "Inputs": [
+        {
+          "Id": "16545d4a274c49e296b8a5110a1492f8",
+          "Name": "",
+          "Description": "",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "NodeType": "OutputNode",
+      "ElementResolver": null,
+      "Symbol": "FFE Schedules",
+      "Id": "eef9c56456be4003bdca809d7e7ae3ae",
+      "Inputs": [
+        {
+          "Id": "29fb2ca55f5543b9a437e28c1a39f6b5",
+          "Name": "",
+          "Description": "",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "10269b3b0a0f433a93d8ba1f2a3b8ac8",
+      "End": "29fb2ca55f5543b9a437e28c1a39f6b5",
+      "Id": "fdf9b825d7334ea5b8c8c20c8bf3d306"
+    },
+    {
+      "Start": "703770dd2dfa47588a56bfdfb1641886",
+      "End": "16545d4a274c49e296b8a5110a1492f8",
+      "Id": "c669817974fd45188989b9c458375580"
+    },
+    {
+      "Start": "8f072c488ab14a64befb76f1bf9a6a8a",
+      "End": "9e0ca89fc1d64e4ab0bba8821da1194e",
+      "Id": "f888df57cefd49e6b6e01046a3c0bc30"
+    },
+    {
+      "Start": "8f072c488ab14a64befb76f1bf9a6a8a",
+      "End": "22a12ee31bb34eeca9b3dbd00fe9c5df",
+      "Id": "265c5bfcaf2e43dfb8ef3f6d7c58b7e3"
+    },
+    {
+      "Start": "5e3ca5d4df334dddb0381cca14fb9cb7",
+      "End": "c4ae288248ef49c493e9aa95a4234868",
+      "Id": "ba543eb4d5c44fa29e676f7e84c797b6"
+    },
+    {
+      "Start": "c00729e20d8b437d9a60153a133a28ab",
+      "End": "a29ec73edbcd467eb603460fd5ee5559",
+      "Id": "d74bc251f7f646d8811c431b53156100"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.4.12684",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "List.GetItemAtIndex",
+        "Id": "4909d77eb71c4898bcc29e9012887eb8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 787.75073934786633,
+        "Y": 619.73464505697893
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.GetItemAtIndex",
+        "Id": "c690ca4408164d8b84b609495f10838b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 777.46628513706935,
+        "Y": 745.35286636982687
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "GetSchedules&RoomNumbers",
+        "Id": "fc8ae8d13da64cf8b49d97faa60988f8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 496.73884765745652,
+        "Y": 559.22596216598845
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number",
+        "Id": "736c2c7dc18647e09f1097e6a775650f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 565.0004861759885,
+        "Y": 712.524522217499
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number",
+        "Id": "840e17d9e6034824aa63c2634438d847",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 562.45066694097909,
+        "Y": 638.57976440223
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Output",
+        "Id": "25d302bef0ca486c90de73d629099ddf",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1216.0446642567717,
+        "Y": 704.3327921836036
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Output",
+        "Id": "eef9c56456be4003bdca809d7e7ae3ae",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1208.9848232796894,
+        "Y": 605.49501850445586
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "4262e45523924f4eab8eb177b7b0cec4",
+        "Title": "<Click here to edit the group title>",
+        "Nodes": [
+          "4909d77eb71c4898bcc29e9012887eb8",
+          "c690ca4408164d8b84b609495f10838b",
+          "fc8ae8d13da64cf8b49d97faa60988f8",
+          "736c2c7dc18647e09f1097e6a775650f",
+          "840e17d9e6034824aa63c2634438d847"
+        ],
+        "Left": 486.73884765745652,
+        "Top": 463.22596216598845,
+        "Width": 490.01189169040981,
+        "Height": 401.12690420383842,
+        "FontSize": 36.0,
+        "InitialTop": 559.22596216598845,
+        "InitialHeight": 335.12690420383842,
+        "TextblockHeight": 86.0,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": 117.84760487759638,
+    "Y": 92.757943675816023,
+    "Zoom": 0.70823125000000009
+  }
+}

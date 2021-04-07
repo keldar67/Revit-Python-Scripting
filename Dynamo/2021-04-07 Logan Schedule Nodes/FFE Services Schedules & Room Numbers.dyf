@@ -1,0 +1,360 @@
+{
+  "Uuid": "dab73581-bec9-4147-8de4-7a3bb80c4d65",
+  "IsCustomNode": true,
+  "Category": "IAN",
+  "Description": "Gets Services FF&E Schedules that exist and don't exist in the model as separate lists",
+  "Name": "FFE Services Schedules & Room Numbers",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\nclr.AddReference(\"RevitAPI\")\r\nfrom Autodesk.Revit.DB import *\r\n\r\n# Import DocumentManager and TransactionManager\r\nclr.AddReference(\"RevitServices\")\r\nimport RevitServices\r\nfrom RevitServices.Persistence import DocumentManager\r\nfrom RevitServices.Transactions import TransactionManager\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\nclr.AddReference(\"System\")\r\nimport System\r\n\r\nclr.AddReference(\"System.Core\")\r\nclr.ImportExtensions(System.Linq)\r\n\r\nfrom System.Collections.Generic import List\r\nfrom System.Collections.Generic import *\r\n#from System.Collections import Counter\r\nfrom System import String\r\n\r\n#------------------------------------------------------\r\ndef isValidRoomNumber(s):\r\n\treturn True\r\n#------------------------------------------------------\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\nroomNumbers = []\r\n\r\n# Get the Schedules\r\ntheRoomSchedules = (\r\nFilteredElementCollector(doc)\r\n.OfCategory(BuiltInCategory.OST_Schedules)\r\n.Where(lambda s: (s.Name.StartsWith('FFE SCHEDULE') and not 'SERVICES' in Element.Name.GetValue(s)))\r\n.ToList()\r\n)\r\n\r\n# Get the Schedules\r\ntheServiceSchedules = (\r\nFilteredElementCollector(doc)\r\n.OfCategory(BuiltInCategory.OST_Schedules)\r\n.Where(lambda s: s.Name.StartsWith('FFE SCHEDULE SERVICES'))\r\n.ToList()\r\n)\r\n\r\n# Output Lists for Matching and Missing Schedules\r\nmatching = []\r\nmissing = []\r\n\r\n# Get the Room Numbers from the Schedules\r\nfor aRoomSchedule in theRoomSchedules:\r\n\tschedName = Element.Name.GetValue(aRoomSchedule)\r\n\troomnumber = schedName[-9:]\r\n\tfound = False\r\n\tif isValidRoomNumber(roomnumber):\r\n\t\t# Check for a match against Room Schedules\r\n\t\tfor aServiceSchedule in theServiceSchedules:\r\n\t\t\tif roomnumber in Element.Name.GetValue(aServiceSchedule):\r\n\t\t\t\tfound = True\r\n\tif found:\r\n\t\tmatching.Add(aServiceSchedule)\r\n\telse:\r\n\t\tmissing.Add(roomnumber)\r\n\r\n# Build the Output lists\r\noutput = []\r\noutput.Add(matching)\r\noutput.Add(missing)\r\n\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = output\r\n",
+      "VariableInputPorts": true,
+      "Id": "bcd0898cfaab47db827691e5aade9918",
+      "Inputs": [
+        {
+          "Id": "e85e6dcc4ca54a1db6657bc6d3ed70df",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bf0ea6760fed43d1a11123866ac0d392",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 0.0,
+      "Id": "f5e4d3783bf14963a3caa46a993fba43",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "800aa643f7494260a3b04e83613a4501",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
+      "Id": "c19603c26d5447f4ac1dd7f7753855de",
+      "Inputs": [
+        {
+          "Id": "46401215134d45cdb9428217d55d74c1",
+          "Name": "list",
+          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "659d6e8ea28440ab806c38eb7bdb53c3",
+          "Name": "index",
+          "Description": "Index of the item to be fetched.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7fd91c363d964e79aa030423afcd8786",
+          "Name": "item",
+          "Description": "Item in the list at the given index.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 1.0,
+      "Id": "c6fb6b8004a546cdb45b3289728436ed",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "fa0b8fb6bc1e41838a1d0210edd585f7",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
+      "Id": "d9e49d8541db4fb8abe54b76b0a5eee0",
+      "Inputs": [
+        {
+          "Id": "be6d32fd20d34647a09def1149a8548b",
+          "Name": "list",
+          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6ac1f9298b9c4070bc87d015ac6d9100",
+          "Name": "index",
+          "Description": "Index of the item to be fetched.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6919075011324b2ca48e2a27a08d7c22",
+          "Name": "item",
+          "Description": "Item in the list at the given index.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "NodeType": "OutputNode",
+      "ElementResolver": null,
+      "Symbol": "Missing Schedules",
+      "Id": "6474e1fb24eb45b89a89f8f8e6c4657d",
+      "Inputs": [
+        {
+          "Id": "6ad3704e11d1458b9da043931bc8c8a0",
+          "Name": "",
+          "Description": "",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "NodeType": "OutputNode",
+      "ElementResolver": null,
+      "Symbol": "Matching Schedules",
+      "Id": "5b3c08b44cc14bb5a6542ef95d49811a",
+      "Inputs": [
+        {
+          "Id": "26c2a0025fe447168831b6a834b95b5b",
+          "Name": "",
+          "Description": "",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "bf0ea6760fed43d1a11123866ac0d392",
+      "End": "46401215134d45cdb9428217d55d74c1",
+      "Id": "81c7491ea43946c6acf64e74c3f92c19"
+    },
+    {
+      "Start": "bf0ea6760fed43d1a11123866ac0d392",
+      "End": "be6d32fd20d34647a09def1149a8548b",
+      "Id": "603a7480cf744b9da87fa5c2097d096e"
+    },
+    {
+      "Start": "800aa643f7494260a3b04e83613a4501",
+      "End": "659d6e8ea28440ab806c38eb7bdb53c3",
+      "Id": "a377332d604f40a981d51668bdb4a6ba"
+    },
+    {
+      "Start": "7fd91c363d964e79aa030423afcd8786",
+      "End": "26c2a0025fe447168831b6a834b95b5b",
+      "Id": "da4e47081f9b46efa8801ae65216e528"
+    },
+    {
+      "Start": "fa0b8fb6bc1e41838a1d0210edd585f7",
+      "End": "6ac1f9298b9c4070bc87d015ac6d9100",
+      "Id": "88f079cdb5be40a599a545a6ab73c5d6"
+    },
+    {
+      "Start": "6919075011324b2ca48e2a27a08d7c22",
+      "End": "6ad3704e11d1458b9da043931bc8c8a0",
+      "Id": "e3d08c450ff04d7a94ab1964f97da90d"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.4.12684",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "GetServiceSchedules",
+        "Id": "bcd0898cfaab47db827691e5aade9918",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 595.74694829878035,
+        "Y": 222.25870774157937
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number",
+        "Id": "f5e4d3783bf14963a3caa46a993fba43",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 771.34117315431183,
+        "Y": 406.00079527122932
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.GetItemAtIndex",
+        "Id": "c19603c26d5447f4ac1dd7f7753855de",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1112.0177714118086,
+        "Y": 391.5509721488587
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number",
+        "Id": "c6fb6b8004a546cdb45b3289728436ed",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 768.39687211072123,
+        "Y": 477.74790497505819
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.GetItemAtIndex",
+        "Id": "d9e49d8541db4fb8abe54b76b0a5eee0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1101.7333172010117,
+        "Y": 517.16919346170675
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Output",
+        "Id": "6474e1fb24eb45b89a89f8f8e6c4657d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1559.9254985534769,
+        "Y": 611.93076640844811
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Output",
+        "Id": "5b3c08b44cc14bb5a6542ef95d49811a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1552.8656575763971,
+        "Y": 513.0929927293
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "19fba52ef4974e85bcbfc1d14b7e2958",
+        "Title": "<Click here to edit the group title>",
+        "Nodes": [
+          "c19603c26d5447f4ac1dd7f7753855de",
+          "d9e49d8541db4fb8abe54b76b0a5eee0",
+          "bcd0898cfaab47db827691e5aade9918",
+          "c6fb6b8004a546cdb45b3289728436ed",
+          "f5e4d3783bf14963a3caa46a993fba43"
+        ],
+        "Left": 585.74694829878035,
+        "Top": 169.25870774157937,
+        "Width": 715.2708231130282,
+        "Height": 466.91048572012738,
+        "FontSize": 36.0,
+        "InitialTop": 222.25870774157937,
+        "InitialHeight": 557.68003265846,
+        "TextblockHeight": 43.0,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": -86.574101930648226,
+    "Y": 62.768758116352878,
+    "Zoom": 0.642869557405948
+  }
+}

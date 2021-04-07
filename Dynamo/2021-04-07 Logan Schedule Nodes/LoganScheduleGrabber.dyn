@@ -1,0 +1,304 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "LoganScheduleGrabber",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "52078eb8-9207-494c-a88c-267af073f8ef",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "6b6836fdc79444caac8c78b816c4de67",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9b7f732b43b44de7bb368931a770507f",
+          "Name": "Room Numbers",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "820e6f11cfbe49f9966892104b607c3b",
+          "Name": "FFE Schedules",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Gets Standard BVN FFE Schedules and also a list of room numbers"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "312362eab6d44c8cb49952770bbfbc38",
+      "Inputs": [
+        {
+          "Id": "b0b40baa852642d48fca20281c3ed265",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6d26bcaed1ff4ad5b1a2dd8f9d8ca08b",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "17aa5ceebbe9497a9c9a076e6ade526d",
+      "Inputs": [
+        {
+          "Id": "924447e88db04f0cb3b2482a8662bc69",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d640799a4eca4bd1b81e0fe092ec953a",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "dab73581-bec9-4147-8de4-7a3bb80c4d65",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "4dc0b2f59a27400e9d3224ea5b3541c2",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8bbcfa516633440191487bf92e12b017",
+          "Name": "Missing Schedules",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "26eeddd7fe9c44bfbd1302a120e185a0",
+          "Name": "Matching Schedules",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Gets Services FF&E Schedules that exist and don't exist in the model as separate lists"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "596723c20a144a628cb18ae41ca896ac",
+      "Inputs": [
+        {
+          "Id": "dc45e285e4b54feda39f9850b516570d",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e1cf0dde241c4a5d896a87800e1f60ee",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "24f0496cc94f43cf8298f797acb365d9",
+      "Inputs": [
+        {
+          "Id": "2994f693a15e4dbe9efdc4aa15001c50",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9f227215c6434e658229afc73f8200eb",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "9b7f732b43b44de7bb368931a770507f",
+      "End": "924447e88db04f0cb3b2482a8662bc69",
+      "Id": "4939d34eaa0c4fd2a737007654541877"
+    },
+    {
+      "Start": "820e6f11cfbe49f9966892104b607c3b",
+      "End": "b0b40baa852642d48fca20281c3ed265",
+      "Id": "087eb755e4d54ef58cd4b9a4b018c369"
+    },
+    {
+      "Start": "8bbcfa516633440191487bf92e12b017",
+      "End": "dc45e285e4b54feda39f9850b516570d",
+      "Id": "d6de464d7246406e9b7a4d56ae760f4f"
+    },
+    {
+      "Start": "26eeddd7fe9c44bfbd1302a120e185a0",
+      "End": "2994f693a15e4dbe9efdc4aa15001c50",
+      "Id": "d6c736dabf7c4946bfb5f5b58df8f074"
+    }
+  ],
+  "Dependencies": [
+    "52078eb8-9207-494c-a88c-267af073f8ef",
+    "dab73581-bec9-4147-8de4-7a3bb80c4d65"
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.4.12684",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "FFE Schedules & Room Numbers",
+        "Id": "6b6836fdc79444caac8c78b816c4de67",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 129.1801608229556,
+        "Y": 51.588671654859922
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "312362eab6d44c8cb49952770bbfbc38",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 415.67380172132539,
+        "Y": 188.35619657375304
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "17aa5ceebbe9497a9c9a076e6ade526d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 466.16192621915638,
+        "Y": -101.4579673134852
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "FFE Services Schedules & Room Numbers",
+        "Id": "4dc0b2f59a27400e9d3224ea5b3541c2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 828.81501188233449,
+        "Y": -148.95278240146354
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "596723c20a144a628cb18ae41ca896ac",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1386.9148324952839,
+        "Y": -176.03798710570783
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "24f0496cc94f43cf8298f797acb365d9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1372.743984746952,
+        "Y": 104.49102941938779
+      }
+    ],
+    "Annotations": [],
+    "X": -39.336740688034411,
+    "Y": 401.52139856973906,
+    "Zoom": 0.89500050427131694
+  }
+}
